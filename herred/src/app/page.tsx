@@ -6,7 +6,12 @@ import Header from "@/components/layout/Header";
 import BodyTemplate from "@/components/layout/BodyTemplate";
 import Sidebar from "@/components/sidebar/Sidebar";
 import "tldraw/tldraw.css";
-
+import {
+  customTools,
+  customUiOverrides,
+  customAssetsUrls,
+  customComponents,
+} from "@/components/tools/overrides";
 export default function Home() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
@@ -17,7 +22,12 @@ export default function Home() {
         setIsSidebarOpen={setIsSidebarOpen}
       />
       <BodyTemplate isSidebarOpen={isSidebarOpen} sidebarContent={<Sidebar />}>
-        <Tldraw />
+        <Tldraw
+          tools={customTools}
+          overrides={customUiOverrides}
+          assetUrls={customAssetsUrls}
+          components={customComponents}
+        />
       </BodyTemplate>
     </div>
   );
