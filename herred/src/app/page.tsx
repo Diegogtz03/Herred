@@ -3,11 +3,12 @@
 import { Tldraw } from "tldraw";
 import { useState } from "react";
 import Header from "@/components/layout/Header";
-import BodyTemplate from "@/components/layout/BodyTemplate";
-import Sidebar from "@/components/sidebar/Sidebar";
+import BodyCanvas from "@/components/layout/BodyTemplate";
 import "tldraw/tldraw.css";
 
+
 export default function Home() {
+  
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   return (
@@ -16,9 +17,9 @@ export default function Home() {
         isSidebarOpen={isSidebarOpen}
         setIsSidebarOpen={setIsSidebarOpen}
       />
-      <BodyTemplate isSidebarOpen={isSidebarOpen} sidebarContent={<Sidebar />}>
-        <Tldraw />
-      </BodyTemplate>
+      <BodyCanvas isSidebarOpen={isSidebarOpen}>
+        <Tldraw/>
+      </BodyCanvas>
     </div>
   );
 }
