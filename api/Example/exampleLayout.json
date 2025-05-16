@@ -1,0 +1,89 @@
+{
+  "nodes": [
+    {
+      "id": 1,
+      "neighbors": [
+        {
+          "id": 2,
+          "capacity": 110,
+          "microwave": false,
+          "opticFiber": true
+        },
+        {
+          "id": 5,
+          "capacity": 105,
+          "microwave": false,
+          "opticFiber": true
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "neighbors": [
+        {
+          "id": 1,
+          "capacity": 110,
+          "microwave": false,
+          "opticFiber": true
+        },
+        {
+          "id": 3,
+          "capacity": 105,
+          "microwave": false,
+          "opticFiber": true
+        },
+        {
+          "id": 4,
+          "capacity": 105,
+          "microwave": false,
+          "opticFiber": true
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "neighbors": [
+        {
+          "id": 2,
+          "capacity": 110,
+          "microwave": false,
+          "opticFiber": true
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "neighbors": [
+        {
+          "id": 2,
+          "capacity": 110,
+          "microwave": false,
+          "opticFiber": true
+        },
+        {
+          "id": 5,
+          "capacity": 110,
+          "microwave": false,
+          "opticFiber": true
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "neighbors": [
+        {
+          "id": 1,
+          "capacity": 110,
+          "microwave": false,
+          "opticFiber": true
+        },
+        {
+          "id": 4,
+          "capacity": 110,
+          "microwave": false,
+          "opticFiber": true
+        }
+      ]
+    }
+  ]
+}
