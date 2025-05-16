@@ -12,6 +12,7 @@ import {
   customAssetsUrls,
   customComponents,
 } from "@/components/tools/overrides";
+import { NodeAsset } from "@/components/tools/node/NodeAsset";
 export default function Home() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
@@ -23,6 +24,7 @@ export default function Home() {
       />
       <BodyTemplate isSidebarOpen={isSidebarOpen} sidebarContent={<Sidebar />}>
         <Tldraw
+          shapeUtils={[NodeAsset]}
           tools={customTools}
           overrides={customUiOverrides}
           assetUrls={customAssetsUrls}

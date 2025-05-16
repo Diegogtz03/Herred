@@ -1,7 +1,7 @@
 import { TLComponents, TLUiAssetUrlOverrides, TLUiOverrides } from "tldraw";
 import { NodeTool } from "./node/NodeTool";
 import { CustomToolbar } from "./CustomToolbar";
-
+import { CustomStylePanel } from "./CustomStylePanel";
 // Defines list of custom tools available
 export const customTools = [NodeTool]
 
@@ -13,7 +13,6 @@ export const customUiOverrides: TLUiOverrides = {
 				id: 'node-selection',
 				label: 'Node Selection',
 				icon: 'node-selection',
-				small: false,
 				kbd: 'n',
 				onSelect() {
 					editor.setCurrentTool('node-selection')
@@ -32,4 +31,5 @@ export const customAssetsUrls: TLUiAssetUrlOverrides = {
 
 export const customComponents: TLComponents = {
 	Toolbar: CustomToolbar,
+	StylePanel: CustomStylePanel,
 }

@@ -1,4 +1,4 @@
-import { AssetRecordType, StateNode } from "tldraw";
+import { AssetRecordType, createShapeId, StateNode } from "tldraw";
 
 const OFFSET = 25
 
@@ -13,38 +13,36 @@ export class NodeTool extends StateNode {
   override onPointerDown() {
 		const { currentPagePoint } = this.editor.inputs
 
+    const shapeId = createShapeId()
     const assetId = AssetRecordType.createId()
     const imageWidth = 50
     const imageHeight = 50
 
-    this.editor.createAssets([
-			{
-				id: assetId,
-				type: 'image',
-				typeName: 'asset',
-				props: {
-					name: 'node.svg',
-					src: '/icons/tools/node.svg',
-					w: imageWidth,
-					h: imageHeight,
-					mimeType: 'image/svg+xml',
-					isAnimated: false,
-				},
-				meta: {},
-			},
-		])
-
 		this.editor.createShape({
-			type: 'image',
+			type: 'node',
+			id: shapeId,
 			x: currentPagePoint.x - OFFSET,
 			y: currentPagePoint.y - OFFSET,
 			props: {
-				assetId,
-				w: imageWidth,
-				h: imageHeight,
-			},
-		})
+        w: imageWidth,
+        h: imageHeight,
+      },
+    });
 
-    console.log('Added node')
+    // TODO: Remove this
+    console.log('Added node  - ', assetId)
+
+    this.editor.setCurrentTool('select')
+    this.editor.select(shapeId)
+
+    this.editor.on('event', (event) => {
+      if (event.name === 'pointer_down') {
+        const selectedShapes = this.editor.getSelectedShapeIds()
+
+        if (selectedShapes.length > 0) {
+          console.log('Selected shapes', selectedShapes)
+        }
+      }
+    })
 	}
 }
