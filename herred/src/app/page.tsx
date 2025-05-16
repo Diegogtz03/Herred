@@ -5,6 +5,7 @@ import { useState } from "react";
 import Header from "@/components/layout/Header";
 import BodyCanvas from "@/components/layout/BodyTemplate";
 import "tldraw/tldraw.css";
+import { NetworkProvider } from "@/components/Context";
 
 
 export default function Home() {
@@ -12,6 +13,7 @@ export default function Home() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   return (
+    <NetworkProvider>
     <div className="h-full w-full flex flex-col">
       <Header
         isSidebarOpen={isSidebarOpen}
@@ -21,5 +23,6 @@ export default function Home() {
         <Tldraw/>
       </BodyCanvas>
     </div>
+    </NetworkProvider>
   );
 }
