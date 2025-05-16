@@ -1,4 +1,4 @@
-import {  StateNode } from "tldraw"
+import {  StateNode, TLArrowShape } from "tldraw"
 
 export class DeleteTool extends StateNode {
   static override id = 'delete-tool'
@@ -10,11 +10,24 @@ export class DeleteTool extends StateNode {
 
     override onPointerDown() {
         const { currentPagePoint } = this.editor.inputs
-        const shape = this.editor.getShapeAtPoint(currentPagePoint)
-        if(shape!=null){
-            console.log("Shape to delete:", shape.type)
-            this.editor.deleteShape(shape.id)
+        
+        const allShapes = this.editor.getCurrentPageShapes()
+        const arrows = allShapes.filter(shape => shape.type === 'arrow')
+        
+        // Buscar si alguna flecha está cerca del punto (con un margen)
+        for (const arrow of arrows) {
+          const arrowShape = arrow as TLArrowShape
+          const bounds = this.editor.getShapePageBounds(arrowShape.id)
+          
+          if (bounds) {
+            // Comprobar si el punto está cerca de la flecha (con un margen)
+            const margin = 10 // margen de 10px para facilitar selección
+            if (this.editor.isPointInShape(arrowShape, currentPagePoint, { margin })) {
+              console.log("Arrow to delete:", arrowShape.id)
+              this.editor.deleteShape(arrowShape.id)
+              return
+            }
+          }    
         }
-    
     }
 }
