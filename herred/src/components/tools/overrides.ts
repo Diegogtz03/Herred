@@ -1,9 +1,10 @@
 import { TLComponents, TLUiAssetUrlOverrides, TLUiOverrides } from "tldraw";
 import { NodeTool } from "./node/NodeTool";
+import { ConnectionTool } from "./connection/ConnectionTool";
 import { CustomToolbar } from "./CustomToolbar";
 import { CustomStylePanel } from "./CustomStylePanel";
 // Defines list of custom tools available
-export const customTools = [NodeTool]
+export const customTools = [NodeTool, ConnectionTool]
 
 // Defines custom UI overrides for the tools
 export const customUiOverrides: TLUiOverrides = {
@@ -18,6 +19,15 @@ export const customUiOverrides: TLUiOverrides = {
 					editor.setCurrentTool('node-selection')
 				},
 			},
+			connection: {
+				id: 'connection-tool',
+				label: 'Connection',
+				icon: 'connection-tool',
+				kbd: 'c',
+				onSelect() {
+					editor.setCurrentTool('connection-tool')
+				},
+			},
 		}
 	},
 }
@@ -26,6 +36,7 @@ export const customUiOverrides: TLUiOverrides = {
 export const customAssetsUrls: TLUiAssetUrlOverrides = {
 	icons: {
 		'node-selection': '/icons/tools/node.svg',
+		'connection-tool': '/icons/tools/connection.svg'
 	},
 }
 
