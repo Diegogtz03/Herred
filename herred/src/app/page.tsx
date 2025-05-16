@@ -5,8 +5,15 @@ import { useState } from "react";
 import Header from "@/components/layout/Header";
 import BodyCanvas from "@/components/layout/BodyTemplate";
 import "tldraw/tldraw.css";
-import { NetworkProvider } from "@/components/Context";
 
+import {
+  customTools,
+  customUiOverrides,
+  customAssetsUrls,
+  customComponents,
+} from "@/components/tools/overrides";
+import { NodeAsset } from "@/components/tools/node/NodeAsset";
+import { NetworkProvider } from "@/components/Context";
 
 export default function Home() {
   
@@ -20,7 +27,13 @@ export default function Home() {
         setIsSidebarOpen={setIsSidebarOpen}
       />
       <BodyCanvas isSidebarOpen={isSidebarOpen}>
-        <Tldraw/>
+        <Tldraw
+          shapeUtils={[NodeAsset]}
+          tools={customTools}
+          overrides={customUiOverrides}
+          assetUrls={customAssetsUrls}
+          components={customComponents}
+        />
       </BodyCanvas>
     </div>
     </NetworkProvider>
