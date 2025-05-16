@@ -10,7 +10,14 @@ export class DeleteTool extends StateNode {
 
     override onPointerDown() {
         const { currentPagePoint } = this.editor.inputs
-        
+        const shapes = this.editor.getShapesAtPoint(currentPagePoint)
+        console.log("Shapes at point:", shapes)
+        if (shapes.length > 0) {
+            const shape = shapes[0]
+            console.log("Shape to delete: ", shape.type)
+            this.editor.deleteShape(shape.id)
+            return
+        }
         const allShapes = this.editor.getCurrentPageShapes()
         const arrows = allShapes.filter(shape => shape.type === 'arrow')
         
