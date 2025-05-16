@@ -11,37 +11,59 @@ export const routeCalc = (req: Request, res: Response) => {
   res.send(result);
 };
 
+interface AdjacencyNode {
+  nodeId: number;
+  capacity: number;
+}
+
 interface AdjacencyList {
-  [nodeId: number]: number[];
+  [node: number]: AdjacencyNode[];
+}
+
+interface Path {
+  path: AdjacencyNode[];
+  maxCapacity: number;
 }
 
 const bfsGetPath = (adjList: AdjacencyList, start: number, goal: number) => {
-  const queue = [[start]];
-  const visited = new Set();
+  const queue: AdjacencyNode[][] = [[{ nodeId: start, capacity: Infinity }]];
+  const paths: Path[] = [];
+  let maxCapacity = 0;
 
   while (queue.length > 0) {
     const path = queue.shift()!;
     const node = path[path.length - 1];
 
-    if (node === goal) {
-      return path;
+    if (node.nodeId === goal) {
+      const maxCapacity = path.reduce((min, node) => {
+        return Math.min(min, node.capacity);
+      }, Infinity);
+      paths.push({ path, maxCapacity });
+      continue;
     }
 
-    if (!visited.has(node)) {
-      visited.add(node);
-      for (const neighbor of adjList[node] || []) {
+    const visitedInPath = new Set(path.map((n) => n.nodeId));
+
+    for (const neighbor of adjList[node.nodeId] || []) {
+      if (!visitedInPath.has(neighbor.nodeId)) {
         queue.push([...path, neighbor]);
       }
     }
   }
 
-  return null;
+  return paths;
 };
 
 const getAdjacencyList = (layout: Layout) => {
   const adjList: AdjacencyList = {};
   for (let node of layout.nodes) {
-    adjList[node.id] = node.neighbors.map((neighbor) => neighbor.id);
+    adjList[node.id] = node.neighbors.map((neighbor) => {
+      const newNode: AdjacencyNode = {
+        nodeId: neighbor.id,
+        capacity: neighbor.capacity,
+      };
+      return newNode;
+    });
   }
 
   return adjList;
