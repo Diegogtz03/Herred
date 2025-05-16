@@ -7,6 +7,7 @@ export default function Header({
   isSidebarOpen: boolean;
   setIsSidebarOpen: (isOpen: boolean) => void;
 }) {
+
   return (
     <header className="flex items-center justify-between p-4 border-b border-gray-200">
       <div className="flex items-center space-x-2">
