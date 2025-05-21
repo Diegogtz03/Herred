@@ -29,9 +29,6 @@ export class NodeTool extends StateNode {
       },
     });
 
-    // TODO: Remove this
-    console.log('Added node  - ', assetId)
-
     this.editor.setCurrentTool('select')
     this.editor.select(shapeId)
 
@@ -39,9 +36,7 @@ export class NodeTool extends StateNode {
       if (event.name === 'pointer_down') {
         const selectedShapes = this.editor.getSelectedShapeIds()
 
-        if (selectedShapes.length > 0) {
-          console.log('Selected shapes', selectedShapes)
-        }
+
       }
     })
 	}

@@ -1,21 +1,34 @@
 import { useContext, useEffect } from "react";
 import { NetworkContext } from "../Context";
-import { useEditor } from "tldraw";
+import { TLEventInfo, useEditor } from "tldraw";
 
-export default function TldrawContextHandler() {
-  const context = useContext(NetworkContext);
+export default function TldrawContextHandler(): void {
+  const { setSidePanelSelection } = useContext(NetworkContext);
   const editor = useEditor();
 
   useEffect(() => {
-    editor.on("event", (event) => {
+    
+    function handlePointerDown(event: TLEventInfo) {
       if (event.name === "pointer_down") {
-        const selected = editor.getSelectedShapeIds();
-        if (selected.length > 0) {
-          context.setName("Node selected!");
+        if (event.target === "canvas") {
+          const selected = editor.getSelectedShapes()[0];
+          if (selected) {
+          if (selected.type === "node") {
+            setSidePanelSelection('node', selected.id);
+          } else if (selected.type === "arrow") {
+            setSidePanelSelection('connection', selected.id);
+          } 
+        } else {
+          setSidePanelSelection('general');
+          }
         }
       }
-    });
-  }, [editor, context]);
+    };
+    editor.on("event", handlePointerDown)
 
-  return <></>;
+    return () => {
+      editor.off("event", handlePointerDown)
+    }
+  }, [editor, setSidePanelSelection]);
+
 }
