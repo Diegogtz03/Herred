@@ -3,8 +3,9 @@ import { NodeTool } from "./node/NodeTool";
 import { ConnectionTool } from "./connection/ConnectionTool";
 import { CustomToolbar } from "./CustomToolbar";
 import { CustomStylePanel } from "./CustomStylePanel";
+import { DeleteTool } from "./delete/DeleteTool";
 // Defines list of custom tools available
-export const customTools = [NodeTool, ConnectionTool]
+export const customTools = [NodeTool, ConnectionTool, DeleteTool]
 
 // Defines custom UI overrides for the tools
 export const customUiOverrides: TLUiOverrides = {
@@ -28,6 +29,15 @@ export const customUiOverrides: TLUiOverrides = {
 					editor.setCurrentTool('connection-tool')
 				},
 			},
+			delete: {
+				id: 'delete-tool',
+				label: 'Delete',
+				icon: 'delete-tool',
+				kbd: 'd', // Tecla opcional
+				onSelect() {
+					editor.setCurrentTool('delete-tool')
+				},
+			},
 		}
 	},
 }
@@ -36,7 +46,8 @@ export const customUiOverrides: TLUiOverrides = {
 export const customAssetsUrls: TLUiAssetUrlOverrides = {
 	icons: {
 		'node-selection': '/icons/tools/node.svg',
-		'connection-tool': '/icons/tools/connection.svg'
+		'connection-tool': '/icons/tools/connection.svg',
+		'delete-tool': '/icons/tools/delete.svg'
 	},
 }
 
