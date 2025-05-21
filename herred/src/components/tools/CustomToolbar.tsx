@@ -15,8 +15,14 @@ export function CustomToolbar() {
   return (
     <DefaultToolbar>
       <TldrawUiMenuItem {...tools["node"]} isSelected={isNodeToolSelected} />
-      <TldrawUiMenuItem {...tools["connection"]} isSelected={isConnectionToolSelected} />
-      <TldrawUiMenuItem {...tools["delete"]} isSelected={isDeleteToolSelected} />
+      <TldrawUiMenuItem
+        {...tools["connection"]}
+        isSelected={isConnectionToolSelected}
+      />
+      <TldrawUiMenuItem
+        {...tools["delete"]}
+        isSelected={isDeleteToolSelected}
+      />
     </DefaultToolbar>
   );
 }
