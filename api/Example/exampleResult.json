@@ -1,0 +1,44 @@
+[
+  {
+    "path": [
+      {
+        "nodeId": 1,
+        "capacity": null
+      },
+      {
+        "nodeId": 2,
+        "capacity": 100
+      },
+      {
+        "nodeId": 3,
+        "capacity": 50
+      }
+    ],
+    "maxCapacity": 50
+  },
+  {
+    "path": [
+      {
+        "nodeId": 1,
+        "capacity": null
+      },
+      {
+        "nodeId": 5,
+        "capacity": 400
+      },
+      {
+        "nodeId": 4,
+        "capacity": 300
+      },
+      {
+        "nodeId": 2,
+        "capacity": 100
+      },
+      {
+        "nodeId": 3,
+        "capacity": 50
+      }
+    ],
+    "maxCapacity": 50
+  }
+]

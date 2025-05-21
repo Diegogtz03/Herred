@@ -1,32 +1,90 @@
 import { Request, Response } from "express";
-import { Layout, Connection, LayoutNode } from "../interfaces/layout";
+import {
+  Layout,
+  Connection,
+  LayoutNode,
+  SortingWeights,
+} from "../interfaces/layout";
+import { AdjacencyNode, AdjacencyList, Path } from "../interfaces/algorithm";
 
 export const routeCalc = (req: Request, res: Response) => {
   const layout: Layout = JSON.parse(JSON.stringify(req.body));
+
+  const weights: SortingWeights = layout.weights;
   const adjList = getAdjacencyList(layout);
-
   const result = bfsGetPath(adjList, layout.start, layout.goal);
-  console.log(result);
+  const sortedResult = sortPaths(result, weights);
 
-  res.send(result);
+  res.send(sortedResult);
 };
 
-interface AdjacencyNode {
-  nodeId: number;
-  capacity: number;
-}
+const sortPaths = (result: Path[], weights: SortingWeights) => {
+  return result.sort((a, b) => {
+    const aConnectionScore = a.opticFiber * 2 + a.microwave;
+    const bConnectionScore = b.opticFiber * 2 + b.microwave;
+    const aLength = a.path.length;
+    const bLength = b.path.length;
+    let aCapacityPoints = 0,
+      bCapacityPoints = 0;
+    let aLengthPoints = 0,
+      bLengthPoints = 0;
+    let aConnectionPoints = 0,
+      bConnectionPoints = 0;
 
-interface AdjacencyList {
-  [node: number]: AdjacencyNode[];
-}
+    if (a.maxCapacity > b.maxCapacity) {
+      aCapacityPoints = weights.maxCapacity;
+      bCapacityPoints = (b.maxCapacity * weights.maxCapacity) / a.maxCapacity;
+    } else {
+      bCapacityPoints = weights.maxCapacity;
+      aCapacityPoints = (a.maxCapacity * weights.maxCapacity) / b.maxCapacity;
+    }
 
-interface Path {
-  path: AdjacencyNode[];
-  maxCapacity: number;
-}
+    if (aLength < bLength) {
+      aLengthPoints = weights.jumps;
+      bLengthPoints = (bLength * weights.jumps) / aLength;
+      bLengthPoints %= weights.jumps;
+    } else {
+      bLengthPoints = weights.jumps;
+      aLengthPoints = (aLength * weights.jumps) / bLength;
+      aLengthPoints %= weights.jumps;
+    }
+
+    if (aConnectionScore < bConnectionScore) {
+      aConnectionPoints = weights.connectionType;
+      bConnectionPoints =
+        (bConnectionScore * weights.connectionType) / aConnectionScore;
+      bConnectionPoints %= weights.connectionType;
+    } else {
+      bConnectionPoints = weights.connectionType;
+      aConnectionPoints =
+        (aConnectionScore * weights.connectionType) / bConnectionScore;
+      aConnectionPoints %= weights.connectionType;
+    }
+
+    const aGeneralScore = aCapacityPoints + aConnectionPoints + aLengthPoints;
+    const bGeneralScore = bCapacityPoints + bConnectionPoints + bLengthPoints;
+
+    console.log(
+      "aCapacityPoints: %d aConnectionPoints: %d aLengthPoints: %d\n",
+      aCapacityPoints,
+      aConnectionPoints,
+      aLengthPoints
+    );
+    console.log(
+      "bCapacityPoints: %d bConnectionPoints: %d bLengthPoints: %d\n",
+      bCapacityPoints,
+      bConnectionPoints,
+      bLengthPoints
+    );
+
+    return bGeneralScore - aGeneralScore;
+  });
+};
 
 const bfsGetPath = (adjList: AdjacencyList, start: number, goal: number) => {
-  const queue: AdjacencyNode[][] = [[{ nodeId: start, capacity: Infinity }]];
+  const queue: AdjacencyNode[][] = [
+    [{ nodeId: start, capacity: Infinity, connection: 0 }],
+  ];
   const paths: Path[] = [];
   let maxCapacity = 0;
 
@@ -38,7 +96,16 @@ const bfsGetPath = (adjList: AdjacencyList, start: number, goal: number) => {
       const maxCapacity = path.reduce((min, node) => {
         return Math.min(min, node.capacity);
       }, Infinity);
-      paths.push({ path, maxCapacity });
+      const opticFiber = path.reduce((OFConnections, node) => {
+        return node.connection == 2 ? (OFConnections += 1) : OFConnections;
+      }, 0);
+      paths.push({
+        path,
+        maxCapacity,
+        jumps: path.length,
+        opticFiber,
+        microwave: path.length - opticFiber - 1,
+      });
       continue;
     }
 
@@ -61,6 +128,7 @@ const getAdjacencyList = (layout: Layout) => {
       const newNode: AdjacencyNode = {
         nodeId: neighbor.id,
         capacity: neighbor.capacity,
+        connection: neighbor.opticFiber ? 2 : 1,
       };
       return newNode;
     });

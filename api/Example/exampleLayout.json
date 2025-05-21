@@ -1,4 +1,11 @@
 {
+  "start": 1,
+  "goal": 3,
+  "weights": {
+    "maxCapacity": 50,
+    "jumps": 30,
+    "connectionType": 20
+  },
   "nodes": [
     {
       "id": 1,
@@ -6,8 +13,8 @@
         {
           "id": 2,
           "capacity": 110,
-          "microwave": false,
-          "opticFiber": true
+          "microwave": true,
+          "opticFiber": false
         },
         {
           "id": 5,
@@ -23,14 +30,14 @@
         {
           "id": 1,
           "capacity": 110,
-          "microwave": false,
-          "opticFiber": true
+          "microwave": true,
+          "opticFiber": false
         },
         {
           "id": 3,
           "capacity": 105,
-          "microwave": false,
-          "opticFiber": true
+          "microwave": true,
+          "opticFiber": false
         },
         {
           "id": 4,
@@ -46,8 +53,8 @@
         {
           "id": 2,
           "capacity": 110,
-          "microwave": false,
-          "opticFiber": true
+          "microwave": true,
+          "opticFiber": false
         }
       ]
     },
@@ -74,8 +81,8 @@
         {
           "id": 1,
           "capacity": 110,
-          "microwave": false,
-          "opticFiber": true
+          "microwave": true,
+          "opticFiber": false
         },
         {
           "id": 4,
