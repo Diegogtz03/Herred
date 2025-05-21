@@ -1,18 +1,12 @@
-import { PencilIcon } from '@heroicons/react/24/solid';
-import { Cog6ToothIcon } from '@heroicons/react/24/outline';
-import { InputField } from '../TextInput';
-import React, { useState, useRef, useEffect, useContext } from 'react';
-import { NetworkContext } from '../Context';
+import { PencilIcon } from "@heroicons/react/24/solid";
+import { Cog6ToothIcon } from "@heroicons/react/24/outline";
+import { InputField } from "../TextInput";
+import React, { useState, useRef, useEffect, useContext } from "react";
+import { NetworkContext } from "../Context";
 
 export default function SidebarNetworkInfo() {
-  const {
-    name,
-    umbral,
-    numberOfNodes,
-    setName,
-    setUmbral,
-   setNumberOfNodes,
-  } = useContext(NetworkContext);
+  const { name, umbral, numberOfNodes, setName, setUmbral, setNumberOfNodes } =
+    useContext(NetworkContext);
 
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -24,6 +18,7 @@ export default function SidebarNetworkInfo() {
   }, [isEditing]);
 
   const handleSave = () => {
+    console.log(name);
     setIsEditing(false);
   };
 
@@ -32,15 +27,15 @@ export default function SidebarNetworkInfo() {
       <div className="flex justify-start items-center pb-3">
         <PencilIcon
           className="h-5 w-5 cursor-pointer hover:text-blue-500 mr-4"
-          onClick={() => setIsEditing(prev => !prev)}
+          onClick={() => setIsEditing((prev) => !prev)}
         />
         {isEditing ? (
           <InputField
             inputRef={inputRef}
             value={name}
-            onChange={e => setName(e.target.value)}
+            onChange={(e) => setName(e.target.value)}
             onBlur={handleSave}
-            onKeyDown={e => e.key === 'Enter' && handleSave()}
+            onKeyDown={(e) => e.key === "Enter" && handleSave()}
             classNameOverride="text-xl border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         ) : (
@@ -56,7 +51,7 @@ export default function SidebarNetworkInfo() {
 
         <InputField
           value={String(umbral)}
-          onChange={e => setUmbral(Number(e.target.value))}
+          onChange={(e) => setUmbral(Number(e.target.value))}
           onBlur={() => {}}
           onKeyDown={() => {}}
           label="Umbral de detección"
@@ -64,7 +59,7 @@ export default function SidebarNetworkInfo() {
 
         <InputField
           value={String(numberOfNodes)}
-          onChange={e => setNumberOfNodes(Number(e.target.value))}
+          onChange={(e) => setNumberOfNodes(Number(e.target.value))}
           onBlur={() => {}}
           onKeyDown={() => {}}
           label="Número de nodos"
