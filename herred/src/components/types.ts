@@ -39,7 +39,7 @@ export interface NetworkContextType {
   addNode: (id: string) => void;
   addConnection: (id: string, startId: string, endId: string) => void;
   deleteNode: (id: string) => void;
-  deleteConnection: (id: string) => void;
+  deleteConnection: (id: string, startId: string, endId: string) => void;
   updateNode: (id: string, updatedNode: NodeType) => void;
   updateConnection: (id: string, updatedConnection: ConnectionType) => void;
   updateNetworkInfo: (updatedNetworkInfo: NetworkInfoType) => void;

@@ -89,27 +89,40 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
       opticFiber: false,
     };
 
-    console.log("New connection", newConn);
-
-    setConnections([...connections, newConn]);
-    setSelectedConnection(newConn);
+    console.log("New connection", newConn, startId, endId);
 
     // add neighbor to nodes it's connected to
 
-    const sourceNode = nodes.find((node) => node.shapeId == startId);
-    const targetNode = nodes.find((node) => node.shapeId == endId);
+    // const sourceNode = nodes.find((node) => node.shapeId == startId);
+    // const targetNode = nodes.find((node) => node.shapeId == endId);
 
-    if (sourceNode) {
-      sourceNode.neighbours.push(newConn);
-    }
-    if (targetNode) {
-      targetNode.neighbours.push(newConn);
-    }
+    // if (sourceNode) {
+    //   sourceNode.neighbours.push(newConn);
+    // }
+    // if (targetNode) {
+    //   targetNode.neighbours.push(newConn);
+    // }
+
+    setNodes((prev) =>
+      prev.map((node) =>
+        node.shapeId === startId || node.shapeId === endId
+          ? { ...node, neighbours: [...node.neighbours, newConn] }
+          : node
+      )
+    );
 
     setNetworkInfo((prev) => ({
       ...prev,
+      nodes: prev.nodes.map((node) =>
+        node.shapeId === startId || node.shapeId === endId
+          ? { ...node, neighbours: [...node.neighbours, newConn] }
+          : node
+      ),
       connections: [...prev.connections, newConn],
     }));
+
+    setConnections([...connections, newConn]);
+    setSelectedConnection(newConn);
   };
 
   const deleteNode = (id: string) => {
@@ -118,17 +131,36 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
 
     setNetworkInfo((prev) => ({
       ...prev,
+      nodes: prev.nodes.filter((node) => node.shapeId !== id),
       numberOfNodes: prev.numberOfNodes - 1,
     }));
   };
 
-  const deleteConnection = (id: string) => {
+  const deleteConnection = (id: string, startId: string, endId: string) => {
     setConnections((prev) => prev.filter((n) => n.shapeId !== id));
 
     // remove neighbour from other nodes
+    setNodes((prev) =>
+      prev.map((node) =>
+        node.shapeId === startId || node.shapeId === endId
+          ? {
+              ...node,
+              neighbours: node.neighbours.filter((n) => n.shapeId !== id),
+            }
+          : node
+      )
+    );
 
     setNetworkInfo((prev) => ({
       ...prev,
+      nodes: prev.nodes.map((node) =>
+        node.shapeId === startId || node.shapeId === endId
+          ? {
+              ...node,
+              neighbours: node.neighbours.filter((n) => n.shapeId !== id),
+            }
+          : node
+      ),
       connections: prev.connections.filter((n) => n.shapeId !== id),
     }));
   };
