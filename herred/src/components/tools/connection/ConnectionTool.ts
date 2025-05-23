@@ -10,7 +10,7 @@ export class ConnectionTool extends StateNode {
     override onEnter() {
         this.editor.setCursor({ type: 'cross', rotation: 0 })
         this.startShapeId = null
-        this.arrowId = null
+        // this.arrowId = null
     }
 
     override onExit() {
@@ -18,7 +18,7 @@ export class ConnectionTool extends StateNode {
         if (this.arrowId && !this.startShapeId) {
             this.editor.deleteShape(this.arrowId);
         }
-        this.arrowId = null
+        // this.arrowId = null
         this.startShapeId = null
     }
 
@@ -44,7 +44,7 @@ export class ConnectionTool extends StateNode {
         }
     }
 
-    override onPointerDown(){
+    override onPointerDown() {
         const { currentPagePoint } = this.editor.inputs
         const hitShape = this.editor.getShapesAtPoint(currentPagePoint)[0]
 
@@ -69,7 +69,8 @@ export class ConnectionTool extends StateNode {
                     props: {
                         start: { x: 0, y: 0 },
                         end: { x: currentPagePoint.x - startX, y: currentPagePoint.y - startY },
-                        dash: 'dotted',
+                        dash: 'dashed',
+                        color: 'light-green',
                         arrowheadStart: 'none',
                         arrowheadEnd: 'none', 
                     }
@@ -100,17 +101,19 @@ export class ConnectionTool extends StateNode {
                     }
                 })
 
+                this.editor.setCurrentTool('select')
+                this.editor.select(this.arrowId!)
+
                 // reset state and switch back to select tool
                 this.startShapeId = null
-                this.arrowId = null
-                this.editor.setCurrentTool('select')
+                // this.arrowId = null
             }
         } else if (this.startShapeId && this.arrowId) {
             // user clicked empty space after selecting first node
             // in this case, cancel operation
             this.editor.deleteShape(this.arrowId)
             this.startShapeId = null
-            this.arrowId = null
+            // this.arrowId = null
         }
     }
 

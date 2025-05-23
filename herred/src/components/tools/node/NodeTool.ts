@@ -1,4 +1,4 @@
-import { AssetRecordType, createShapeId, StateNode } from "tldraw";
+import { createShapeId, StateNode } from "tldraw";
 
 const OFFSET = 25
 
@@ -14,7 +14,6 @@ export class NodeTool extends StateNode {
 		const { currentPagePoint } = this.editor.inputs
 
     const shapeId = createShapeId()
-    const assetId = AssetRecordType.createId()
     const imageWidth = 50
     const imageHeight = 50
 
@@ -31,13 +30,5 @@ export class NodeTool extends StateNode {
 
     this.editor.setCurrentTool('select')
     this.editor.select(shapeId)
-
-    this.editor.on('event', (event) => {
-      if (event.name === 'pointer_down') {
-        const selectedShapes = this.editor.getSelectedShapeIds()
-
-
-      }
-    })
 	}
 }

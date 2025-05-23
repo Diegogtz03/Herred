@@ -5,9 +5,8 @@ import React, { useState, useRef, useEffect, useContext } from "react";
 import { NetworkContext } from "../Context";
 
 export default function SidebarNodeInfo() {
-  const { selectedNode, updateNode } =
-    useContext(NetworkContext);
-
+  const { selectedNode, updateNode } = useContext(NetworkContext);
+  const [name, setName] = useState(selectedNode!.name);
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -19,7 +18,12 @@ export default function SidebarNodeInfo() {
 
   const handleSave = () => {
     console.log(selectedNode!.name);
+    console.log(selectedNode!.shapeId);
     setIsEditing(false);
+    updateNode(selectedNode!.shapeId, {
+      ...selectedNode!,
+      name: name,
+    });
   };
 
   return (
@@ -32,14 +36,14 @@ export default function SidebarNodeInfo() {
         {isEditing ? (
           <InputField
             inputRef={inputRef}
-            value={selectedNode!.name}
-            onChange={(e) => {}}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             onBlur={handleSave}
             onKeyDown={(e) => e.key === "Enter" && handleSave()}
             classNameOverride="text-xl border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         ) : (
-          <h1 className="text-gray-950 text-2xl">{selectedNode!.name}</h1>
+          <h1 className="text-gray-950 text-2xl">{name}</h1>
         )}
       </div>
 

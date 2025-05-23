@@ -1,4 +1,4 @@
-import { TLComponents, TLUiAssetUrlOverrides, TLUiOverrides } from "tldraw";
+import { TLComponents, TLUiActionsContextType, TLUiAssetUrlOverrides, TLUiOverrides } from "tldraw";
 import { NodeTool } from "./node/NodeTool";
 import { ConnectionTool } from "./connection/ConnectionTool";
 import { CustomToolbar } from "./CustomToolbar";
@@ -6,6 +6,18 @@ import { CustomStylePanel } from "./CustomStylePanel";
 import { DeleteTool } from "./delete/DeleteTool";
 // Defines list of custom tools available
 export const customTools = [NodeTool, ConnectionTool, DeleteTool]
+
+// Defines custom actions
+export const customActions: TLUiActionsContextType = {
+	undo: {
+		id: 'undo',
+		label: 'Undo',
+		icon: 'undo',
+		kbd: 'ctrl+z',
+		onSelect() {
+		},
+	},
+}
 
 // Defines custom UI overrides for the tools
 export const customUiOverrides: TLUiOverrides = {
@@ -39,7 +51,7 @@ export const customUiOverrides: TLUiOverrides = {
 				},
 			},
 		}
-	},
+	}
 }
 
 // Defines custom asset paths for the tools
