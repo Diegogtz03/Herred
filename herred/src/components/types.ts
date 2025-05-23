@@ -1,45 +1,49 @@
 
 export interface ConnectionType {
-    id: number;
-    shapeId: string;
-    source: string;
-    target: string;
-    type: 'directed' | 'undirected';
-    weight: number;
-    capacity: number;
-    microwave: boolean;
-    opticFiber: boolean;
+  id: number;
+  shapeId: string;
+  source: string;
+  target: string;
+  type: 'directed' | 'undirected';
+  weight: number;
+  capacity: number;
+  microwave: boolean;
+  opticFiber: boolean;
 }
 
 export interface NodeType {
-    name: string;
-    shapeId: string;
-    id: number;
-    type: string;
-    status: string;
-    description: string;
-    umbral: number;
-    neighbours: ConnectionType[];
-  }
+  name: string;
+  shapeId: string;
+  id: number;
+  type: string;
+  status: string;
+  description: string;
+  umbral: number;
+  neighbours: ConnectionType[];
+}
 
 
 export interface NetworkInfoType {
-    name: string;
-    umbral: number;
-    nodes: NodeType[];
-    numberOfNodes: number;
-    connections: ConnectionType[];
+  name: string;
+  umbral: number;
+  nodes: NodeType[];
+  numberOfNodes: number;
+  connections: ConnectionType[];
 }
   
 export interface NetworkContextType {
-    selectedNode: NodeType | null;
-    selectedConnection: ConnectionType | null;
-    setSidePanelSelection: (type: 'general' | 'node' | 'connection', id?: string) => void;
-    networkInfo: NetworkInfoType;
-    updateNode: (id: string, updatedNode: NodeType) => void;
-    updateConnection: (id: string, updatedConnection: ConnectionType) => void;
-    updateNetworkInfo: (updatedNetworkInfo: NetworkInfoType) => void;
-    sidePanelType: 'general' | 'node' | 'connection';
+  selectedNode: NodeType | null;
+  selectedConnection: ConnectionType | null;
+  setSidePanelSelection: (type: 'general' | 'node' | 'connection', id?: string) => void;
+  networkInfo: NetworkInfoType;
+  addNode: (id: string) => void;
+  addConnection: (id: string, startId: string, endId: string) => void;
+  deleteNode: (id: string) => void;
+  deleteConnection: (id: string) => void;
+  updateNode: (id: string, updatedNode: NodeType) => void;
+  updateConnection: (id: string, updatedConnection: ConnectionType) => void;
+  updateNetworkInfo: (updatedNetworkInfo: NetworkInfoType) => void;
+  sidePanelType: 'general' | 'node' | 'connection';
 };
   
 

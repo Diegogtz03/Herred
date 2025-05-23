@@ -11,13 +11,14 @@ export class DeleteTool extends StateNode {
     override onPointerDown() {
         const { currentPagePoint } = this.editor.inputs
         const shapes = this.editor.getShapesAtPoint(currentPagePoint)
-        console.log("Shapes at point:", shapes)
+
         if (shapes.length > 0) {
             const shape = shapes[0]
             console.log("Shape to delete: ", shape.type)
             this.editor.deleteShape(shape.id)
             return
         }
+
         const allShapes = this.editor.getCurrentPageShapes()
         const arrows = allShapes.filter(shape => shape.type === 'arrow')
         
@@ -29,8 +30,8 @@ export class DeleteTool extends StateNode {
           if (bounds) {
             // Comprobar si el punto está cerca de la flecha (con un margen)
             const margin = 10 // margen de 10px para facilitar selección
+
             if (this.editor.isPointInShape(arrowShape, currentPagePoint, { margin })) {
-              console.log("Arrow to delete:", arrowShape.id)
               this.editor.deleteShape(arrowShape.id)
               return
             }
