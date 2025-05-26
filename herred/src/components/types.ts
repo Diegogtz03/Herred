@@ -59,9 +59,29 @@ export interface NetworkInfoRequest {
     jumps: number;
     connectionType: number;
   };
-  nodes: {
-    id: number;
-    neighbors: ConnectionType[];
+  nodes: RequestNode[];
+}
+
+export interface NetworkInfoResponse {
+  result: {
+    bottleneckNode: number;
+    nodeRequirements: {
+      id: number;
+      dangerFlag: boolean;
+      warningFlag: boolean;
+    }[];
+    path: {
+      path: {
+        nodeId: number;
+        capacity: number | null;
+        maxCapacity: number | null;
+        connection: number;
+      }[];
+      maxCapacity: number;
+      jumps: number;
+      opticFiber: number;
+      microwave: number;
+    };
   }[];
 }
   
@@ -75,40 +95,10 @@ export interface NetworkContextType {
   deleteNode: (id: string) => void;
   deleteConnection: (id: string, startId: string, endId: string) => void;
   updateNode: (id: string, updatedNode: NodeType) => void;
-  updateConnection: (id: string, updatedConnection: ConnectionType) => void;
+  updateConnection: (id: string, startId: string, endId: string, updatedConnection: ConnectionType) => void;
   updateNetworkInfo: (updatedNetworkInfo: NetworkInfoType) => void;
   formatNetworkInfo: () => NetworkInfoRequest;
+  algorithmResponse: NetworkInfoResponse | null;
+  setAlgorithmResponse: (response: NetworkInfoResponse) => void;
   sidePanelType: 'general' | 'node' | 'connection' | 'suggestion';
 };
-  
-
-/* TODO: Limpiar el codigo ya que se estanblezcan los tipos de los nodos
- y conexiones que coinciden con los del algoritmo 
-
-Types del algoritmo:
-
-export interface Layout {
-    weights: SortingWeights;
-    nodes: LayoutNode[];
-    start: number;
-    goal: number;
-  }
-  
-  export interface SortingWeights {
-    maxCapacity: number;
-    jumps: number;
-    connectionType: number;
-  }
-  a
-  export interface LayoutNode {
-    id: number;
-    neighbors: Connection[];
-  }
-  
-  export interface Connection {
-    id: number;    
-    capacity: number;
-    microwave: boolean;
-    opticFiber: boolean;
-  }
-*/
