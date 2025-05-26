@@ -2,6 +2,7 @@ import React, { createContext, useState, ReactNode } from "react";
 import {
   ConnectionType,
   NetworkContextType,
+  NetworkInfoRequest,
   NetworkInfoType,
   NodeType,
 } from "./types";
@@ -26,6 +27,7 @@ const defaultNetworkContextInfo: NetworkContextType = {
   updateNode: () => {},
   updateConnection: () => {},
   updateNetworkInfo: () => {},
+  formatNetworkInfo: () => {},
   sidePanelType: "general",
 };
 
@@ -89,9 +91,9 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
     };
 
     console.log("New connection", newConn, startId, endId);
-
-    setNodes((prevNodes) =>
-      prevNodes.map((node) =>
+    
+    setNodes((prev) =>
+      prev.map((node) =>
         node.shapeId === startId || node.shapeId === endId
           ? { ...node, neighbours: [...node.neighbours, newConn] }
           : node
@@ -248,6 +250,30 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
     setNetworkInfo(prev => ({...prev, ...info}));
   };
 
+  const formatNetworkInfo = () => {
+    if (!selectedNode) {
+      return null;
+    }
+
+    const request: NetworkInfoRequest = {
+      start: 0, // TODO: Get central node
+      goal: selectedNode.id,
+      goalCapacity: 0, // TODO: Get goal capacity
+      thresholds: {
+        thresholdWarning: networkInfo.umbral,
+        thresholdDanger: 80,
+      },
+      weights: {
+        maxCapacity: 50,
+        jumps: 30,
+        connectionType: 20,
+      },
+      nodes: [],
+    };
+
+    return request;
+  };
+
   return (
     <NetworkContext.Provider
       value={{
@@ -263,6 +289,7 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
         updateConnection,
         sidePanelType,
         setSidePanelSelection,
+        formatNetworkInfo,
       }}
     >
       {children}

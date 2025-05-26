@@ -1,0 +1,116 @@
+[
+  {
+    "bottleneckNode": 3,
+    "nodeRequirements": [
+      {
+        "id": 1,
+        "dangerFlag": false,
+        "warningFlag": false
+      },
+      {
+        "id": 5,
+        "dangerFlag": false,
+        "warningFlag": true
+      },
+      {
+        "id": 4,
+        "dangerFlag": false,
+        "warningFlag": true
+      },
+      {
+        "id": 2,
+        "dangerFlag": true,
+        "warningFlag": true
+      },
+      {
+        "id": 3,
+        "dangerFlag": true,
+        "warningFlag": true
+      }
+    ],
+    "path": {
+      "path": [
+        {
+          "nodeId": 1,
+          "capacity": null,
+          "maxCapacity": null,
+          "connection": 0
+        },
+        {
+          "nodeId": 5,
+          "capacity": 400,
+          "maxCapacity": 1000,
+          "connection": 2
+        },
+        {
+          "nodeId": 4,
+          "capacity": 300,
+          "maxCapacity": 600,
+          "connection": 2
+        },
+        {
+          "nodeId": 2,
+          "capacity": 100,
+          "maxCapacity": 300,
+          "connection": 2
+        },
+        {
+          "nodeId": 3,
+          "capacity": 50,
+          "maxCapacity": 200,
+          "connection": 1
+        }
+      ],
+      "maxCapacity": 50,
+      "jumps": 5,
+      "opticFiber": 3,
+      "microwave": 1
+    }
+  },
+  {
+    "bottleneckNode": 3,
+    "nodeRequirements": [
+      {
+        "id": 1,
+        "dangerFlag": false,
+        "warningFlag": false
+      },
+      {
+        "id": 2,
+        "dangerFlag": true,
+        "warningFlag": true
+      },
+      {
+        "id": 3,
+        "dangerFlag": true,
+        "warningFlag": true
+      }
+    ],
+    "path": {
+      "path": [
+        {
+          "nodeId": 1,
+          "capacity": null,
+          "maxCapacity": null,
+          "connection": 0
+        },
+        {
+          "nodeId": 2,
+          "capacity": 100,
+          "maxCapacity": 400,
+          "connection": 1
+        },
+        {
+          "nodeId": 3,
+          "capacity": 50,
+          "maxCapacity": 200,
+          "connection": 1
+        }
+      ],
+      "maxCapacity": 50,
+      "jumps": 3,
+      "opticFiber": 0,
+      "microwave": 2
+    }
+  }
+]

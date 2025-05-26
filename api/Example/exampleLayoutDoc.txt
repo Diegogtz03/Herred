@@ -1,32 +1,24 @@
 {
-  "start": 1,
-  "goal": 3,
-  "goalCapacity": 100,
-  "thresholds": {
-    "thresholdWarning": 50,
-    "thresholdDanger": 80
+  "start": 1, // Id del nodo inicial. Tiene que ser el nodo central de la red.
+  "goal": 3,  // Id del nodo final. Al que se le busca incrementar la capacidad.
+  "weights": { // Pesos para el algorítmo de ordenamiento. Qué tanto importa cada parámetro en el filtro.
+    "maxCapacity": 50, // Capacidad máxima de la conexión.
+    "jumps": 30, // Cantidad de saltos entre nodos. 
+    "connectionType": 20 // Tipo de conexión. Da prioridad a la conexión de fibra óptica sobre la de microondas.
   },
-  "weights": {
-    "maxCapacity": 50,
-    "jumps": 30,
-    "connectionType": 20
-  },
-  "nodes": [
+  "nodes": [ // Lista de nodos. Cada nodo tiene un id y una lista de vecinos. 
     {
       "id": 1,
-      "consumption": 0,
-      "neighbors": [
+      "neighbors": [ // Lista de vecinos. Cada vecino tiene un id, capacidad, tipo de conexión y si es microondas o fibra óptica.
         {
           "id": 2,
-          "bandwith": 400,
-          "usage": 300,
-          "microwave": true,
-          "opticFiber": false
+          "capacity": 110, // Capacidad de la conexión.
+          "microwave": true, // Si la conexión es de microondas.
+          "opticFiber": false // Si la conexión es de fibra óptica.
         },
         {
           "id": 5,
-          "bandwith": 1000,
-          "usage": 600,
+          "capacity": 105,
           "microwave": false,
           "opticFiber": true
         }
@@ -34,26 +26,22 @@
     },
     {
       "id": 2,
-      "consumption": 350,
       "neighbors": [
         {
           "id": 1,
-          "bandwith": 300,
-          "usage": 200,
+          "capacity": 110,
           "microwave": true,
           "opticFiber": false
         },
         {
           "id": 3,
-          "bandwith": 200,
-          "usage": 150,
+          "capacity": 105,
           "microwave": true,
           "opticFiber": false
         },
         {
           "id": 4,
-          "bandwith": 300,
-          "usage": 200,
+          "capacity": 105,
           "microwave": false,
           "opticFiber": true
         }
@@ -61,12 +49,10 @@
     },
     {
       "id": 3,
-      "consumption": 150,
       "neighbors": [
         {
           "id": 2,
-          "bandwith": 200,
-          "usage": 150,
+          "capacity": 110,
           "microwave": true,
           "opticFiber": false
         }
@@ -74,19 +60,16 @@
     },
     {
       "id": 4,
-      "consumption": 100,
       "neighbors": [
         {
           "id": 2,
-          "bandwith": 300,
-          "usage": 200,
+          "capacity": 110,
           "microwave": false,
           "opticFiber": true
         },
         {
           "id": 5,
-          "bandwith": 600,
-          "usage": 300,
+          "capacity": 110,
           "microwave": false,
           "opticFiber": true
         }
@@ -94,19 +77,16 @@
     },
     {
       "id": 5,
-      "consumption": 300,
       "neighbors": [
         {
           "id": 1,
-          "bandwith": 1000,
-          "usage": 600,
+          "capacity": 110,
           "microwave": true,
           "opticFiber": false
         },
         {
           "id": 4,
-          "bandwith": 600,
-          "usage": 300,
+          "capacity": 110,
           "microwave": false,
           "opticFiber": true
         }
