@@ -17,6 +17,7 @@ export default function SidebarNodeInfo() {
   // Initialize name safely and update it via useEffect when selectedNode changes
   const [name, setName] = useState(selectedNode?.name || "");
   const [umbral, setUmbral] = useState(selectedNode?.umbral || 0);
+  const [goal, setGoal] = useState(selectedNode?.umbral || 0);
   const [nodeType, setNodeType] = useState(selectedNode?.type || "central");
   const [consumption, setConsumption] = useState(
     selectedNode?.consumption || 0
@@ -29,11 +30,13 @@ export default function SidebarNodeInfo() {
       setName(selectedNode.name || "");
       setUmbral(selectedNode.umbral || 0);
       setConsumption(selectedNode.consumption || 0);
+      setGoal(selectedNode.goal || 0);
       setNodeType(selectedNode.type || "central");
     } else {
       // Reset fields if no node is selected
       setName("");
       setUmbral(0);
+      setGoal(0);
       setConsumption(0);
       setNodeType("central");
     }
@@ -70,6 +73,16 @@ export default function SidebarNodeInfo() {
       updateNode(selectedNode.shapeId, {
         ...selectedNode,
         consumption: newConsumption,
+      });
+    }
+  };
+
+  const handleGoalChange = (newGoal: number) => {
+    setGoal(newGoal);
+    if (selectedNode) {
+      updateNode(selectedNode.shapeId, {
+        ...selectedNode,
+        goal: newGoal,
       });
     }
   };
@@ -121,6 +134,20 @@ export default function SidebarNodeInfo() {
               updateNode(selectedNode.shapeId, {
                 ...selectedNode,
                 consumption,
+              });
+            }
+          }}
+        />
+
+        <InputField
+          label="Consumo Meta"
+          value={String(goal)}
+          onChange={(e) => handleGoalChange(Number(e.target.value))}
+          onBlur={() => {
+            if (selectedNode) {
+              updateNode(selectedNode.shapeId, {
+                ...selectedNode,
+                goal,
               });
             }
           }}

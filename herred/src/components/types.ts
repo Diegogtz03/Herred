@@ -29,6 +29,7 @@ export interface NodeType {
   umbral: number;
   neighbours: ConnectionType[];
   consumption: number;
+  goal: number;
 }
 
 
