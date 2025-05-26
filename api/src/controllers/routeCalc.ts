@@ -24,7 +24,7 @@ export const routeCalc = (req: Request, res: Response) => {
   const sortedResult = sortPaths(result, weights);
   const nuancedResult = analyzePaths(sortedResult, thresholds, layout);
 
-  res.send(nuancedResult);
+  res.send({ result: nuancedResult });
 };
 
 const analyzePaths = (
