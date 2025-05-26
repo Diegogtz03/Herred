@@ -1,7 +1,7 @@
-
 export interface ConnectionType {
   id: number;
   shapeId: string;
+  name?: string;
   source: string;
   target: string;
   type: 'directed' | 'undirected';
@@ -28,6 +28,7 @@ export interface NodeType {
   description: string;
   umbral: number;
   neighbours: ConnectionType[];
+  consumption: number;
 }
 
 
@@ -67,17 +68,17 @@ export interface NetworkInfoRequest {
 export interface NetworkContextType {
   selectedNode: NodeType | null;
   selectedConnection: ConnectionType | null;
-  setSidePanelSelection: (type: 'general' | 'node' | 'connection', id?: string) => void;
+  setSidePanelSelection: (type: 'general' | 'node' | 'connection'| 'suggestion', id?: string) => void;
   networkInfo: NetworkInfoType;
   addNode: (id: string) => void;
-  addConnection: (id: string, startId: string, endId: string) => void;
+  addConnection: (id: string, startId: string, endId: string, connectionType: 'fiber' | 'microwave', capacity: number) => void;
   deleteNode: (id: string) => void;
   deleteConnection: (id: string, startId: string, endId: string) => void;
   updateNode: (id: string, updatedNode: NodeType) => void;
   updateConnection: (id: string, updatedConnection: ConnectionType) => void;
   updateNetworkInfo: (updatedNetworkInfo: NetworkInfoType) => void;
   formatNetworkInfo: () => NetworkInfoRequest;
-  sidePanelType: 'general' | 'node' | 'connection';
+  sidePanelType: 'general' | 'node' | 'connection' | 'suggestion';
 };
   
 
