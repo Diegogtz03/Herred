@@ -11,6 +11,14 @@ export interface ConnectionType {
   opticFiber: boolean;
 }
 
+export interface RequestConnection {
+  id: number;
+  bandwith: number;
+  usage: number;
+  microwave: boolean;
+  opticFiber: boolean;
+}
+
 export interface NodeType {
   name: string;
   shapeId: string;
@@ -30,6 +38,31 @@ export interface NetworkInfoType {
   numberOfNodes: number;
   connections: ConnectionType[];
 }
+
+export interface RequestNode {
+  id: number;
+  consumption: number;
+  neighbors: RequestConnection[];
+}
+
+export interface NetworkInfoRequest {
+  start: number;
+  goal: number;
+  goalCapacity: number;
+  thresholds: {
+    thresholdWarning: number;
+    thresholdDanger: number;
+  };
+  weights: {
+    maxCapacity: number;
+    jumps: number;
+    connectionType: number;
+  };
+  nodes: {
+    id: number;
+    neighbors: ConnectionType[];
+  }[];
+}
   
 export interface NetworkContextType {
   selectedNode: NodeType | null;
@@ -43,6 +76,7 @@ export interface NetworkContextType {
   updateNode: (id: string, updatedNode: NodeType) => void;
   updateConnection: (id: string, updatedConnection: ConnectionType) => void;
   updateNetworkInfo: (updatedNetworkInfo: NetworkInfoType) => void;
+  formatNetworkInfo: () => NetworkInfoRequest;
   sidePanelType: 'general' | 'node' | 'connection';
 };
   
