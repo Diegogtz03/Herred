@@ -109,53 +109,28 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
       connections: [...prev.connections, newConn],
     }));
     
+    setConnections([...connections, newConn]);
     setSelectedConnection(newConn);
   };
 
   const deleteNode = (id: string) => {
-    const nodeToDelete = nodes.find(n => n.shapeId === id);
-    if (!nodeToDelete) return;
-
-    const affectedConnections = connections.filter(conn => conn.source === id || conn.target === id);
-    const affectedConnectionIds = affectedConnections.map(conn => conn.shapeId);
-
-    setConnections(prev => prev.filter(conn => !affectedConnectionIds.includes(conn.shapeId)));
-
-    setNodes((prevNodes) =>
-      prevNodes
-        .filter((n) => n.shapeId !== id)
-        .map((node) => ({
-          ...node,
-          neighbours: node.neighbours.filter(neigh => neigh.source !== id && neigh.target !== id),
-        }))
-    );
+    setNodes((prev) => prev.filter((n) => n.shapeId !== id));
+    
     setNumberOfNodes((prev) => Math.max(0, prev - 1));
 
     setNetworkInfo((prev) => ({
       ...prev,
-      nodes: prev.nodes
-        .filter((n) => n.shapeId !== id)
-        .map((node) => ({
-          ...node,
-          neighbours: node.neighbours.filter(neigh => neigh.source !== id && neigh.target !== id),
-        })),
-      connections: prev.connections.filter(conn => !affectedConnectionIds.includes(conn.shapeId)),
+      nodes: prev.nodes.filter((node) => node.shapeId !== id),
       numberOfNodes: prev.numberOfNodes - 1,
     }));
   };
 
-  const deleteConnection = (id: string, startId?: string, endId?: string) => {
-    const connToDelete = connections.find(c => c.shapeId === id);
-    if (!connToDelete) return;
-
-    const sId = startId || connToDelete.source;
-    const eId = endId || connToDelete.target;
-
+  const deleteConnection = (id: string, startId: string, endId: string) => {
     setConnections((prev) => prev.filter((n) => n.shapeId !== id));
 
     setNodes((prevNodes) =>
       prevNodes.map((node) =>
-        node.shapeId === sId || node.shapeId === eId
+        node.shapeId === startId || node.shapeId === endId
           ? {
               ...node,
               neighbours: node.neighbours.filter((n) => n.shapeId !== id),
@@ -167,7 +142,7 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
     setNetworkInfo((prev) => ({
       ...prev,
       nodes: prev.nodes.map((node) =>
-        node.shapeId === sId || node.shapeId === eId
+        node.shapeId === startId || node.shapeId === endId
           ? {
               ...node,
               neighbours: node.neighbours.filter((n) => n.shapeId !== id),
@@ -185,66 +160,43 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
     setSidePanelType(type);
 
     if (type === "node" && id) {
-      const node = nodes.find((n) => n.shapeId === id) || networkInfo.nodes.find(n => n.shapeId === id);
-      setSelectedNode(node || null);
-      if (!node) setSelectedConnection(null);
-    } else if (type === "connection" && id) {
-      const conn = connections.find((n) => n.shapeId === id) || networkInfo.connections.find(n => n.shapeId === id);
+      const node = nodes.find((n) => n.shapeId === id);
+      if (node) {
+        setSelectedNode(node);
+      }
+    } if (type === "connection" && id) {
+      const conn = connections.find((n) => n.shapeId === id);
       setSelectedConnection(conn || null);
-      if (!conn) setSelectedNode(null);
-    } else {
-      setSelectedNode(null);
-      setSelectedConnection(null);
-    }
+      if (conn) setSelectedConnection(conn);
+    } 
   };
 
-  const updateNode = (id: string, updatedNode: Partial<NodeType>) => {
-    let fullUpdatedNode: NodeType | undefined;
+  const updateNode = (id: string, updatedNode: NodeType) => {
+
     setNodes((prev) =>
-      prev.map((node) => {
-        if (node.shapeId === id) {
-          fullUpdatedNode = { ...node, ...updatedNode };
-          return fullUpdatedNode;
-        }
-        return node;
-      })
+      prev.map((node) => (node.shapeId === id ? updatedNode : node))
     );
-    if (fullUpdatedNode) {
-        setSelectedNode(fullUpdatedNode);
-    }
 
     setNetworkInfo((prev) => ({
       ...prev,
       nodes: prev.nodes.map((node) =>
-        node.shapeId === id ? { ...node, ...updatedNode } : node
+        node.shapeId === id ? updateNoded : node
       ),
-    }));
+    }))
   };
 
-  const updateConnection = (id: string, updatedConnectionPartial: Partial<ConnectionType>) => {
-    let fullUpdatedConnection: ConnectionType | undefined;
+  const updateConnection = (id: string, updateConnection: ConnectionType) => {
     setConnections((prev) =>
-      prev.map((conn) => {
-        if (conn.shapeId === id) {
-            fullUpdatedConnection = { ...conn, ...updatedConnectionPartial };
-            return fullUpdatedConnection;
-        }
-        return conn;
-      })
-    );
-
-    if (fullUpdatedConnection) {
-        setSelectedConnection(fullUpdatedConnection);
-    }
+      prev.map((conn) => (conn.shapeId === id ? updateConnection : conn)));
 
     setNetworkInfo((prev) => ({
       ...prev,
-      connections: prev.connections.map(c => c.shapeId === id ? { ...c, ...updatedConnectionPartial } : c),
+      connections: [...prev.connections, updateConnection],
     }));
   };
 
-  const updateNetworkInfo = (info: Partial<NetworkInfoType>) => {
-    setNetworkInfo(prev => ({...prev, ...info}));
+  const updateNetworkInfo = (info : NetworkInfoType) => {
+    setNetworkInfo(info);
   };
 
   return (
