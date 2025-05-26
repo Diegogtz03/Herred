@@ -143,7 +143,6 @@ export default function SidebarConnectionInfo() {
               updateConnection(selectedConnection.shapeId, { ...selectedConnection, capacity });
             }
           }}
-          classNameOverride="mt-2"
         />
       </div>
     </div>
