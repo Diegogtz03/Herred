@@ -1,32 +1,150 @@
 import { Request, Response } from "express";
-import { Layout, Connection, LayoutNode } from "../interfaces/layout";
+import {
+  Layout,
+  Connection,
+  LayoutNode,
+  SortingWeights,
+  Thresholds,
+} from "../interfaces/layout";
+import {
+  AdjacencyNode,
+  AdjacencyList,
+  Path,
+  AnalyzedPath,
+  NodeRequirements,
+} from "../interfaces/algorithm";
 
 export const routeCalc = (req: Request, res: Response) => {
   const layout: Layout = JSON.parse(JSON.stringify(req.body));
+
+  const weights: SortingWeights = layout.weights;
+  const thresholds: Thresholds = layout.thresholds;
   const adjList = getAdjacencyList(layout);
-
   const result = bfsGetPath(adjList, layout.start, layout.goal);
-  console.log(result);
+  const sortedResult = sortPaths(result, weights);
+  const nuancedResult = analyzePaths(sortedResult, thresholds, layout);
 
-  res.send(result);
+  res.send(nuancedResult);
 };
 
-interface AdjacencyNode {
-  nodeId: number;
-  capacity: number;
-}
+const analyzePaths = (
+  sortedResult: Path[],
+  thresholds: Thresholds,
+  layout: Layout
+): AnalyzedPath[] => {
+  return sortedResult.map((path) => {
+    let bottleneckNodeId: number = 1;
+    let minCapacity: number = Infinity;
+    let results: NodeRequirements[] = path.path.map(
+      (node): NodeRequirements => {
+        let dangerFlag: boolean = false;
+        let warningFlag: boolean = false;
+        if (node.capacity < minCapacity) {
+          bottleneckNodeId = node.nodeId;
+          minCapacity = node.capacity;
+        }
 
-interface AdjacencyList {
-  [node: number]: AdjacencyNode[];
-}
+        let possibleCapacity =
+          node.maxCapacity - node.capacity + layout.goalCapacity;
 
-interface Path {
-  path: AdjacencyNode[];
-  maxCapacity: number;
-}
+        let dangerThreshold =
+          (node.maxCapacity * thresholds.thresholdDanger) / 100;
+        let warningThreshold =
+          (node.maxCapacity * thresholds.thresholdWarning) / 100;
+
+        if (possibleCapacity > dangerThreshold) {
+          dangerFlag = true;
+        }
+        if (possibleCapacity > warningThreshold) {
+          warningFlag = true;
+        }
+
+        return { id: node.nodeId, dangerFlag, warningFlag };
+      }
+    );
+
+    return {
+      bottleneckNode: bottleneckNodeId,
+      nodeRequirements: results,
+      path: path,
+    };
+
+    // const maxCapacity = path.reduce((min, node) => {
+    //   return Math.min(min, node.capacity);
+    // }, Infinity);
+  });
+};
+
+const sortPaths = (result: Path[], weights: SortingWeights): Path[] => {
+  const scoreRatio = (
+    primary: number,
+    secondary: number,
+    weight: number
+  ): [number, number] => {
+    if (primary === secondary) return [weight, weight];
+
+    const max = Math.max(primary, secondary);
+    const min = Math.min(primary, secondary);
+
+    const scaledMin = (min * weight) / max;
+    const adjustedMin = scaledMin;
+
+    return primary > secondary ? [weight, adjustedMin] : [adjustedMin, weight];
+  };
+
+  return result.sort((a, b) => {
+    // Composite score for connection type (fiber counts double)
+    const aConn = a.opticFiber / a.microwave;
+    const bConn = b.opticFiber / b.microwave;
+
+    const [aCapacity, bCapacity] = scoreRatio(
+      a.maxCapacity,
+      b.maxCapacity,
+      weights.maxCapacity
+    );
+    const [aLength, bLength] = scoreRatio(
+      a.path.length - 1,
+      b.path.length - 1,
+      weights.jumps
+    ); // fewer jumps is better
+    const [aConnScore, bConnScore] = scoreRatio(
+      aConn,
+      bConn,
+      weights.connectionType
+    ); // higher connScore is better
+
+    const aTotal = aCapacity - aLength + aConnScore;
+    console.log(
+      "aCapacity: %d - aLength: %d + aConnScore: %d = aTotal: %d",
+      aCapacity,
+      aLength,
+      aConnScore,
+      aTotal
+    );
+    const bTotal = bCapacity - bLength + bConnScore;
+    console.log(
+      "bCapacity: %d - bLength: %d + bConnScore: %d = bTotal: %d",
+      bCapacity,
+      bLength,
+      bConnScore,
+      bTotal
+    );
+
+    return bTotal - aTotal;
+  });
+};
 
 const bfsGetPath = (adjList: AdjacencyList, start: number, goal: number) => {
-  const queue: AdjacencyNode[][] = [[{ nodeId: start, capacity: Infinity }]];
+  const queue: AdjacencyNode[][] = [
+    [
+      {
+        nodeId: start,
+        capacity: Infinity,
+        maxCapacity: Infinity,
+        connection: 0,
+      },
+    ],
+  ];
   const paths: Path[] = [];
   let maxCapacity = 0;
 
@@ -38,7 +156,16 @@ const bfsGetPath = (adjList: AdjacencyList, start: number, goal: number) => {
       const maxCapacity = path.reduce((min, node) => {
         return Math.min(min, node.capacity);
       }, Infinity);
-      paths.push({ path, maxCapacity });
+      const opticFiber = path.reduce((OFConnections, node) => {
+        return node.connection == 2 ? (OFConnections += 1) : OFConnections;
+      }, 0);
+      paths.push({
+        path,
+        maxCapacity,
+        jumps: path.length,
+        opticFiber,
+        microwave: path.length - opticFiber - 1,
+      });
       continue;
     }
 
@@ -60,7 +187,9 @@ const getAdjacencyList = (layout: Layout) => {
     adjList[node.id] = node.neighbors.map((neighbor) => {
       const newNode: AdjacencyNode = {
         nodeId: neighbor.id,
-        capacity: neighbor.capacity,
+        capacity: neighbor.bandwith - neighbor.usage,
+        maxCapacity: neighbor.bandwith,
+        connection: neighbor.opticFiber ? 2 : 1,
       };
       return newNode;
     });
