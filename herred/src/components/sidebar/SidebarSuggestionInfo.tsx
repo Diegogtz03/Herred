@@ -6,7 +6,7 @@ import { NetworkContext } from "../Context";
 
 export default function SidebarSuggestionInfo() {
   const { selectedNode, updateNode } = useContext(NetworkContext);
-  const [name, setName] = useState(selectedNode!.name);
+  // const [name, setName] = useState(selectedNode!.name);
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -20,10 +20,10 @@ export default function SidebarSuggestionInfo() {
     console.log(selectedNode!.name);
     console.log(selectedNode!.shapeId);
     setIsEditing(false);
-    updateNode(selectedNode!.shapeId, {
-      ...selectedNode!,
-      name: name,
-    });
+    // updateNode(selectedNode!.shapeId, {
+    //   ...selectedNode!,
+    //   // name: name,
+    // });
   };
 
   return (
@@ -52,10 +52,10 @@ export default function SidebarSuggestionInfo() {
       <div className="w-full max-w-sm">
         <div className="flex items-center space-x-2 mb-1">
           <Cog6ToothIcon className="h-5 w-5 text-gray-700" />
-          <h2 className="font-medium text-lg">Configuración</h2>
+          <h2 className="font-medium text-lg">Dummy</h2>
         </div>
 
-        <InputField
+        {/* <InputField
           value={String(selectedNode!.umbral)}
           onChange={(e) => {}}
           onBlur={() => {}}
@@ -69,7 +69,7 @@ export default function SidebarSuggestionInfo() {
           onBlur={() => {}}
           onKeyDown={() => {}}
           label="Tipo"
-        />
+        /> */}
       </div>
       <button
         type="button"

@@ -72,7 +72,7 @@ export default function SidebarNodeInfo() {
   }
 
   return (
-    <div className="p-4 space-y-4 flex flex-col justify-between h-full pb-6">
+    <div className="flex flex-col justify-between h-full pb-6">
       <div className="flex justify-start items-center pb-3">
         <PencilIcon
           className="h-5 w-5 cursor-pointer hover:text-blue-500 mr-4"
