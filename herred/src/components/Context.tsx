@@ -57,6 +57,7 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
       status: "",
       description: "",
       umbral: 0,
+      consumption: 0,
       neighbours: [],
     };
 

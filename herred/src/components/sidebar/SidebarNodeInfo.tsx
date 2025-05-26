@@ -11,7 +11,7 @@ export default function SidebarNodeInfo() {
   const [name, setName] = useState(selectedNode?.name || "");
   const [umbral, setUmbral] = useState(selectedNode?.umbral || 0);
   const [nodeType, setNodeType] = useState(selectedNode?.type || "central");
-
+  const [consumption, setConsumption] = useState(selectedNode?.consumption || 0);
   const [isEditingName, setIsEditingName] = useState(false);
   const nameInputRef = useRef<HTMLInputElement>(null);
 
@@ -19,11 +19,13 @@ export default function SidebarNodeInfo() {
     if (selectedNode) {
       setName(selectedNode.name || "");
       setUmbral(selectedNode.umbral || 0);
+      setConsumption(selectedNode.consumption || 0);
       setNodeType(selectedNode.type || "central");
     } else {
       // Reset fields if no node is selected
       setName("");
       setUmbral(0);
+      setConsumption(0);
       setNodeType("central");
     }
   }, [selectedNode]);
@@ -51,6 +53,16 @@ export default function SidebarNodeInfo() {
       });
     }
   }
+
+  const handleConsumptionChange = (newConsumption: number) => {
+    setConsumption(newConsumption);
+    if (selectedNode) {
+      updateNode(selectedNode.shapeId, {
+        ...selectedNode,
+        consumption: newConsumption,
+      });
+    }
+  };
   
   // Add similar handlers if nodeType needs to be editable from here
   // For now, assuming nodeType is primarily changed via CustomStylePanel for nodes
@@ -87,19 +99,14 @@ export default function SidebarNodeInfo() {
         </div>
 
         <InputField
-          value={String(selectedNode!.umbral)}
-          onChange={(e) => {}}
-          onBlur={() => {}}
-          onKeyDown={() => {}}
-          label="Umbral de detección"
-        />
-
-        <InputField
-          value={selectedNode!.type}
-          onChange={(e) => {}}
-          onBlur={() => {}}
-          onKeyDown={() => {}}
-          label="Tipo"
+          label="Consumo"
+          value={String(consumption)}
+          onChange={(e) => handleConsumptionChange(Number(e.target.value))}
+          onBlur={() => { 
+            if (selectedNode) {
+              updateNode(selectedNode.shapeId, { ...selectedNode, consumption });
+            }
+          }}
         />
       </div>
     </div>

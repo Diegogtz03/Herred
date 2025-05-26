@@ -20,6 +20,7 @@ export interface NodeType {
   description: string;
   umbral: number;
   neighbours: ConnectionType[];
+  consumption: number;
 }
 
 

@@ -14,6 +14,7 @@ export default function SidebarConnectionInfo() {
 
   const [name, setName] = useState(selectedConnection?.name || "Connection"); 
   const [capacity, setCapacity] = useState(selectedConnection?.capacity || 0);
+  const [weight, setWeight] = useState(selectedConnection?.weight || 0);
   const [connectionType, setConnectionType] = useState<'fiber' | 'microwave'>(
     selectedConnection?.microwave ? 'microwave' : 'fiber'
   );
@@ -25,10 +26,12 @@ export default function SidebarConnectionInfo() {
     if (selectedConnection) {
       setName(selectedConnection.name || `Connection ${selectedConnection.id}`);
       setCapacity(selectedConnection.capacity || 0);
+      setWeight(selectedConnection.weight || 0);
       setConnectionType(selectedConnection.microwave ? 'microwave' : 'fiber');
     } else {
       setName("Connection");
       setCapacity(0);
+      setWeight(0);
       setConnectionType('fiber');
     }
   }, [selectedConnection]);
@@ -55,6 +58,16 @@ export default function SidebarConnectionInfo() {
       updateConnection(selectedConnection.shapeId, {
         ...selectedConnection,
         capacity: newCapacity,
+      });
+    }
+  };
+
+  const handleWeightChange = (newWeight: number) => {
+    setWeight(newWeight);
+    if (selectedConnection) {
+      updateConnection(selectedConnection.shapeId, {
+        ...selectedConnection,
+        weight: newWeight,
       });
     }
   };
@@ -135,12 +148,23 @@ export default function SidebarConnectionInfo() {
         </div>
 
         <InputField
-          label="Capacidad"
+          label="Ancho de Banda"
           value={String(capacity)}
           onChange={(e) => handleCapacityChange(Number(e.target.value))}
           onBlur={() => { 
             if (selectedConnection) {
               updateConnection(selectedConnection.shapeId, { ...selectedConnection, capacity });
+            }
+          }}
+        />
+
+        <InputField
+          label="Uso"
+          value={String(weight)}
+          onChange={(e) => handleWeightChange(Number(e.target.value))}
+          onBlur={() => { 
+            if (selectedConnection) {
+              updateConnection(selectedConnection.shapeId, { ...selectedConnection, weight });
             }
           }}
         />
