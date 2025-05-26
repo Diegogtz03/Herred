@@ -109,19 +109,6 @@ export class ConnectionTool extends StateNode {
                     }
                 })
 
-                if (this.arrowId && this.startShapeId) {
-                    // Access addConnection from the extended editor instance
-                    const appState = (this.editor as any).appState as { addConnection?: NetworkContextType['addConnection'] };
-                    if (appState?.addConnection) {
-                        const sharedStyles = this.editor.getSharedStyles();
-                        const activeConnectionType = (sharedStyles.get(myConnectionStyle) || myConnectionStyle.defaultValue) as 'fiber' | 'microwave';
-                        const capacity = 0; // Default capacity for new connections
-                        appState.addConnection(this.arrowId.toString(), this.startShapeId.toString(), endShapeId.toString(), activeConnectionType, capacity);
-                    } else {
-                        console.warn("addConnection function not found on editor.appState");
-                    }
-                }
-
                 this.editor.setCurrentTool('select')
                 this.editor.select(this.arrowId!)
                 this.startShapeId = null

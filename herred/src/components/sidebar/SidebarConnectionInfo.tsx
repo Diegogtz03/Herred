@@ -3,8 +3,7 @@ import { Cog6ToothIcon } from "@heroicons/react/24/outline";
 import { InputField } from "../TextInput";
 import React, { useState, useRef, useEffect, useContext } from "react";
 import { NetworkContext } from "../Context";
-import { TLArrowShape } from "tldraw";
-import { myConnectionStyle } from "../tools/CustomStylePanel";
+import { TLArrowShape, TLShapeId } from "tldraw";
 import { EditorContext } from "../../app/page";
 
 export default function SidebarConnectionInfo() {
@@ -23,6 +22,7 @@ export default function SidebarConnectionInfo() {
 
   useEffect(() => {
     if (selectedConnection) {
+      console.log('select connection jc ', selectedConnection)
       setName(selectedConnection.name || `Connection ${selectedConnection.id}`);
       setCapacity(selectedConnection.capacity || 0);
       setConnectionType(selectedConnection.microwave ? 'microwave' : 'fiber');
@@ -60,6 +60,7 @@ export default function SidebarConnectionInfo() {
   };
 
   const handleConnectionTypeChange = (newType: 'fiber' | 'microwave') => {
+    console.log("Changing type of conn to: ", newType);
     setConnectionType(newType);
     if (selectedConnection && editor) {
       const isMicrowave = newType === 'microwave';
@@ -67,11 +68,11 @@ export default function SidebarConnectionInfo() {
         ...selectedConnection,
         microwave: isMicrowave,
         opticFiber: !isMicrowave,
-        name: selectedConnection.name,
       });
 
       editor.markHistoryStoppingPoint();
-      editor.setStyleForSelectedShapes(myConnectionStyle, newType);
+
+      editor.select(selectedConnection.shapeId as TLShapeId);
       
       const newColor = isMicrowave ? 'black' : 'yellow';
       const newDash: TLArrowShape['props']['dash'] = isMicrowave ? 'dashed' : 'draw';
@@ -84,7 +85,9 @@ export default function SidebarConnectionInfo() {
           dash: newDash,
         }
       });
-    } else if (!editor) {
+
+      // editor.setStyleForSelectedShapes(myConnectionStyle, newType);
+    } else {
         console.warn("Editor instance not available in SidebarConnectionInfo");
     }
   };

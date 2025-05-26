@@ -124,28 +124,26 @@ function ConnectionTypePicker({ editor }: { editor: Editor}) {
               editor.markHistoryStoppingPoint();
               const value = type.type as MyConnectionStyle;
               editor.setStyleForSelectedShapes(myConnectionStyle, value);
-              const selectedShapes = editor.getSelectedShapes().filter(s => s.type === 'connection');
+              const selectedShapes = editor.getSelectedShapes().filter(s => s.type === 'arrow');
               selectedShapes.forEach(shape => {
-                if (shape.type === 'connection') {
-                  let newColor = 'black';
-                  let newDash: "draw" | "dotted" | "dashed" | "solid" = "solid";
-                  if (value === 'fiber') {
-                    newColor = 'yellow';
-                    newDash = 'solid';
-                  } else if (value === 'microwave') {
-                    newColor = 'black';
-                    newDash = 'dashed';
-                  }
-                  editor.updateShape({
-                    id: shape.id,
-                    type: "connection",
-                    props: {
-                      ...shape.props,
-                      color: newColor,
-                      dash: newDash,
-                    }
-                  })
+                let newColor = 'black';
+                let newDash: "draw" | "dotted" | "dashed" | "solid" = "solid";
+                if (value === 'fiber') {
+                  newColor = 'yellow';
+                  newDash = 'draw';
+                } else if (value === 'microwave') {
+                  newColor = 'black';
+                  newDash = 'dashed';
                 }
+                editor.updateShape({
+                  id: shape.id,
+                  type: "arrow",
+                  props: {
+                    ...shape.props,
+                    color: newColor,
+                    dash: newDash,
+                  }
+                })
               })
             }}
           >

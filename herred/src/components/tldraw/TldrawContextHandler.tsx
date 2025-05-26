@@ -1,5 +1,6 @@
 import { useContext, useEffect } from "react";
 import { NetworkContext } from "../Context";
+import { myConnectionStyle } from "../tools/CustomStylePanel";
 import { TLEventInfo, TLShape, TLShapeId, useEditor } from "tldraw";
 
 export default function TldrawContextHandler() {
@@ -25,26 +26,36 @@ export default function TldrawContextHandler() {
           if (selected && editor.getCurrentTool().id !== "delete-tool") {
             if (editor.getCurrentTool().id === "select") {
               if (selected.type === "node") {
-                console.log("Added node", selected.id);
+                console.log("Selected node", selected.id);
 
-                addNode(selected.id);
+                const existingNode = networkInfo.nodes.find(node => node.shapeId === selected.id);
+                if (!existingNode){
+                  addNode(selected.id);
+                }
                 setSidePanelSelection("node", selected.id);
               } else if (selected.type === "arrow") {
-                console.log("Added connection", selected.id);
+                console.log("Selected connection", selected.id);
 
-                const shape = editor.getShape(selected.id as TLShapeId);
+                const existingConnection = networkInfo.connections.find(conn => conn.shapeId === selected.id);
+                if (!existingConnection) {
+                  const shape = editor.getShape(selected.id as TLShapeId);
 
-                const bindings = editor.getBindingsFromShape(
-                  shape as TLShape,
-                  "arrow"
-                );
-
-                if (bindings.length === 2) {
-                  addConnection(
-                    selected.id,
-                    bindings[0].toId,
-                    bindings[1].toId
+                  const bindings = editor.getBindingsFromShape(
+                    shape as TLShape,
+                    "arrow"
                   );
+
+                  if (bindings.length === 2) {
+                    const sharedStyles = editor.getSharedStyles();
+                    const activeConnectionType = sharedStyles.get(myConnectionStyle) || 'fiber';
+                    addConnection(
+                      selected.id,
+                      bindings[0].toId,
+                      bindings[1].toId,
+                      activeConnectionType as 'fiber' | 'microwave',
+                      0
+                    );
+                  }
                 }
                 setSidePanelSelection("connection", selected.id);
               }

@@ -1,7 +1,7 @@
 export interface ConnectionType {
   id: number;
   shapeId: string;
-  name?: string;
+  name: string;
   source: string;
   target: string;
   type: 'directed' | 'undirected';
@@ -39,10 +39,10 @@ export interface NetworkContextType {
   addNode: (id: string) => void;
   addConnection: (id: string, startId: string, endId: string, connectionType: 'fiber' | 'microwave', capacity: number) => void;
   deleteNode: (id: string) => void;
-  deleteConnection: (id: string, startId?: string, endId?: string) => void;
-  updateNode: (id: string, updatedNode: Partial<NodeType>) => void;
-  updateConnection: (id: string, updatedConnection: Partial<ConnectionType>) => void;
-  updateNetworkInfo: (info: Partial<NetworkInfoType>) => void;
+  deleteConnection: (id: string, startId: string, endId: string) => void;
+  updateNode: (id: string, updatedNode: NodeType) => void;
+  updateConnection: (id: string, updatedConnection: ConnectionType) => void;
+  updateNetworkInfo: (updatedNetworkInfo: NetworkInfoType) => void;
   sidePanelType: 'general' | 'node' | 'connection';
 };
   

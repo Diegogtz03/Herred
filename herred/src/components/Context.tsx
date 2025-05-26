@@ -89,14 +89,6 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
 
     console.log("New connection", newConn, startId, endId);
 
-    setNodes((prevNodes) =>
-      prevNodes.map((node) =>
-        node.shapeId === startId || node.shapeId === endId
-          ? { ...node, neighbours: [...node.neighbours, newConn] }
-          : node
-      )
-    );
-
     setConnections((prevConns) => [...prevConns, newConn]);
 
     setNetworkInfo((prev) => ({
@@ -109,7 +101,6 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
       connections: [...prev.connections, newConn],
     }));
     
-    setConnections([...connections, newConn]);
     setSelectedConnection(newConn);
   };
 
@@ -180,19 +171,23 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
     setNetworkInfo((prev) => ({
       ...prev,
       nodes: prev.nodes.map((node) =>
-        node.shapeId === id ? updateNoded : node
+        node.shapeId === id ? updatedNode : node
       ),
     }))
   };
 
-  const updateConnection = (id: string, updateConnection: ConnectionType) => {
+  const updateConnection = (id: string, updatedConnection: ConnectionType) => {
     setConnections((prev) =>
-      prev.map((conn) => (conn.shapeId === id ? updateConnection : conn)));
+      prev.map((conn) => (conn.shapeId === id ? updatedConnection : conn)));
 
     setNetworkInfo((prev) => ({
       ...prev,
-      connections: [...prev.connections, updateConnection],
+      connections: prev.connections.map((conn) => 
+        conn.shapeId === id ? updatedConnection : conn
+      ),
     }));
+
+    setSelectedConnection(updatedConnection);
   };
 
   const updateNetworkInfo = (info : NetworkInfoType) => {
