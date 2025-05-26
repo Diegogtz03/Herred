@@ -103,7 +103,7 @@ export default function SidebarConnectionInfo() {
             onChange={(e) => handleConnectionTypeChange(e.target.value as 'fiber' | 'microwave')}
             className="w-full border border-gray-300 rounded-xl px-3 py-1 text-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="fibra">Fibra Óptica</option>
+            <option value="fiber">Fibra Óptica</option>
             <option value="microwave">Microwave</option>
           </select>
         </div>

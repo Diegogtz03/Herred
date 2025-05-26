@@ -86,8 +86,8 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
       weight: 0,
       capacity: 0,
       connectionType: 'fiber',
-      microwave: true,
-      opticFiber: false,
+      microwave: false,
+      opticFiber: true,
     };
 
     console.log("New connection", newConn, startId, endId);
