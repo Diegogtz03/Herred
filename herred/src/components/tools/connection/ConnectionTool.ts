@@ -69,8 +69,8 @@ export class ConnectionTool extends StateNode {
                     props: {
                         start: { x: 0, y: 0 },
                         end: { x: currentPagePoint.x - startX, y: currentPagePoint.y - startY },
-                        dash: 'dashed',
-                        color: 'light-green',
+                        dash: 'solid',
+                        color: 'yellow',
                         arrowheadStart: 'none',
                         arrowheadEnd: 'none', 
                     }

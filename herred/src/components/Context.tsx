@@ -85,6 +85,7 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
       type: "directed",
       weight: 0,
       capacity: 0,
+      connectionType: 'fiber',
       microwave: true,
       opticFiber: false,
     };

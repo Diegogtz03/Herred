@@ -7,6 +7,7 @@ export interface ConnectionType {
   type: 'directed' | 'undirected';
   weight: number;
   capacity: number;
+  connectionType: 'fiber' | 'microwave';
   microwave: boolean;
   opticFiber: boolean;
 }

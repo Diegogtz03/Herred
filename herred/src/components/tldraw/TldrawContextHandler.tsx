@@ -1,6 +1,7 @@
 import { useContext, useEffect } from "react";
 import { NetworkContext } from "../Context";
 import { TLEventInfo, TLShape, TLShapeId, useEditor } from "tldraw";
+import { useConnectionStyle } from "../hooks/useConnectionStyle";
 
 export default function TldrawContextHandler() {
   const {
@@ -12,6 +13,8 @@ export default function TldrawContextHandler() {
     networkInfo,
   } = useContext(NetworkContext);
   const editor = useEditor();
+
+  useConnectionStyle();
 
   useEffect(() => {
     function handlePointerDown(event: TLEventInfo) {
@@ -26,25 +29,30 @@ export default function TldrawContextHandler() {
             if (editor.getCurrentTool().id === "select") {
               if (selected.type === "node") {
                 console.log("Added node", selected.id);
-
-                addNode(selected.id);
+                const existingNode = networkInfo.nodes.find(node => node.shapeId === selected.id);
+                if (!existingNode){
+                  addNode(selected.id);
+                }
                 setSidePanelSelection("node", selected.id);
               } else if (selected.type === "arrow") {
-                console.log("Added connection", selected.id);
+                const existingConnection = networkInfo.connections.find(conn => conn.shapeId === selected.id);
+                if (!existingConnection){
+                  console.log("Selected connection", selected.id);
 
-                const shape = editor.getShape(selected.id as TLShapeId);
+                  const shape = editor.getShape(selected.id as TLShapeId);
 
-                const bindings = editor.getBindingsFromShape(
-                  shape as TLShape,
-                  "arrow"
-                );
-
-                if (bindings.length === 2) {
-                  addConnection(
-                    selected.id,
-                    bindings[0].toId,
-                    bindings[1].toId
+                  const bindings = editor.getBindingsFromShape(
+                    shape as TLShape,
+                    "arrow"
                   );
+
+                  if (bindings.length === 2) {
+                    addConnection(
+                      selected.id,
+                      bindings[0].toId,
+                      bindings[1].toId
+                    );
+                  }
                 }
                 setSidePanelSelection("connection", selected.id);
               }
