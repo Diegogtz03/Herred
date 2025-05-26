@@ -164,7 +164,7 @@ export default function SidebarNodeInfo() {
 
           console.log("Request", request);
           // Placeholder for generating suggestions
-          setSidePanelSelection("suggestion");
+          setSidePanelSelection("suggestion", selectedNode?.shapeId);
           console.log("Generar sugerencia clicked");
         }}
       >

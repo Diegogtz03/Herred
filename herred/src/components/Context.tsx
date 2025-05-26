@@ -233,7 +233,14 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
         networkInfo.nodes.find((n) => n.shapeId === id);
       setSelectedNode(node || null);
       if (!node) setSelectedConnection(null);
-    } else if (type === "connection" && id) {
+    } else if (type === "suggestion" && id) {
+      const node =
+        nodes.find((n) => n.shapeId === id) ||
+        networkInfo.nodes.find((n) => n.shapeId === id);
+      setSelectedNode(node || null);
+      if (!node) setSelectedConnection(null);
+    } 
+    else if (type === "connection" && id) {
       const conn =
         connections.find((n) => n.shapeId === id) ||
         networkInfo.connections.find((n) => n.shapeId === id);
@@ -349,11 +356,11 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
 
   const setAlgorithmResponse = (response: NetworkInfoResponse) => {
     setAlgorithmResponseInternal(response);
-
-    setNetworkInfo((prev) => ({
-      ...prev,
-      algorithmResponse: response,
-    }));
+    //TODO ESTO FALLA PORQ NO SON EL MISMO DATO, SE FRESEA LA PAGINA
+    // setNetworkInfo((prev) => ({
+    //   ...prev,
+    //   algorithmResponse: response,
+    // }));
   };
 
   return (

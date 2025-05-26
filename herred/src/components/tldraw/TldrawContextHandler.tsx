@@ -43,7 +43,9 @@ export default function TldrawContextHandler() {
                   addConnection(
                     selected.id,
                     bindings[0].toId,
-                    bindings[1].toId
+                    bindings[1].toId,
+                    // "fiber",
+                    // 1000 // Default capacity, can be adjusted
                   );
                 }
                 setSidePanelSelection("connection", selected.id);
