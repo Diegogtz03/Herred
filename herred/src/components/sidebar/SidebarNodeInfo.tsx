@@ -1,11 +1,11 @@
-import { PencilIcon } from "@heroicons/react/24/solid";
+import { BoltIcon, PencilIcon } from "@heroicons/react/24/solid";
 import { Cog6ToothIcon } from "@heroicons/react/24/outline";
 import { InputField } from "../TextInput";
 import React, { useState, useRef, useEffect, useContext } from "react";
 import { NetworkContext } from "../Context";
 
 export default function SidebarNodeInfo() {
-  const { selectedNode, updateNode } = useContext(NetworkContext);
+  const { selectedNode, updateNode, setSidePanelSelection } = useContext(NetworkContext);
   
   // Initialize name safely and update it via useEffect when selectedNode changes
   const [name, setName] = useState(selectedNode?.name || "");
@@ -72,7 +72,7 @@ export default function SidebarNodeInfo() {
   }
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="p-4 space-y-4 flex flex-col justify-between h-full pb-6">
       <div className="flex justify-start items-center pb-3">
         <PencilIcon
           className="h-5 w-5 cursor-pointer hover:text-blue-500 mr-4"
@@ -109,6 +109,21 @@ export default function SidebarNodeInfo() {
           }}
         />
       </div>
+      <button
+        type="button"
+        className='
+          mt-auto text-white font-bold bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none
+         focus:ring-purple-200 dark:focus:ring-purple-800 rounded-lg text-sm px-5 py-2.5 text-center mx-4 mb-2 transition-all duration-300 ease-in-out 
+        shadow-lg hover:shadow-xl transform hover:scale-105 cursor-pointer'
+        onClick={() => {
+          // Placeholder for generating suggestions
+          setSidePanelSelection('suggestion')
+            console.log("Generar sugerencia clicked");
+        }}
+      >
+        Generar sugerencia 
+        <BoltIcon className="h-5 w-5 inline-block ml-1" />
+      </button>
     </div>
   );
 }

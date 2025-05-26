@@ -40,7 +40,7 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
     useState<NetworkInfoType>(defaultNetworkInfo);
   const [nodes, setNodes] = useState<NodeType[]>([]);
   const [sidePanelType, setSidePanelType] = useState<
-    "general" | "node" | "connection"
+    "general" | "node" | "connection" | "suggestion"
   >("general");
   const [selectedNode, setSelectedNode] = useState<NodeType | null>(null);
   const [connections, setConnections] = useState<ConnectionType[]>([]);
@@ -180,7 +180,7 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const setSidePanelSelection = (
-    type: "general" | "node" | "connection",
+    type: "general" | "node" | "connection" | "suggestion",
     id?: string
   ) => {
     setSidePanelType(type);

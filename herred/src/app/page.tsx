@@ -1,6 +1,6 @@
 "use client";
 
-import { Editor, Tldraw, TldrawApp } from "tldraw";
+import { Editor, Tldraw } from "tldraw";
 import { useState, useRef, useContext, useEffect } from "react";
 import Header from "@/components/layout/Header";
 import BodyCanvas from "@/components/layout/BodyTemplate";
