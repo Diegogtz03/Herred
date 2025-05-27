@@ -71,6 +71,8 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
   const [selectedConnection, setSelectedConnection] =
     useState<ConnectionType | null>(null);
   const [numberOfNodes, setNumberOfNodes] = useState<number>(0);
+  const[selectedSuggestion, setSelectedSuggestionInternal] =
+    useState<NetworkInfoResponse['result'][0] | null>(null);
 
   const addNode = (id: string) => {
     const newNode: NodeType = {
@@ -407,6 +409,10 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
     // }));
   };
 
+  const setSelectedSuggestion = (suggestion: NetworkInfoResponse['result'][0] | null) => {
+    setSelectedSuggestionInternal(suggestion);
+  }
+
   return (
     <NetworkContext.Provider
       value={{
@@ -425,6 +431,8 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
         formatNetworkInfo,
         algorithmResponse,
         setAlgorithmResponse,
+        selectedSuggestion,
+        setSelectedSuggestion
       }}
     >
       {children}

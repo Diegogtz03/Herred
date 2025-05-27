@@ -221,4 +221,13 @@ export interface NetworkContextType {
   algorithmResponse: NetworkInfoResponse | null;
   setAlgorithmResponse: (response: NetworkInfoResponse) => void;
   sidePanelType: 'general' | 'node' | 'connection' | 'suggestion';
+  selectedSuggestion: NetworkInfoResponse['result'][0] | null;
+  setSelectedSuggestion: (suggestion: NetworkInfoResponse['result'][0] | null) => void;
 };
+
+export interface PDFReportData {
+  networkName: string;
+  selectedNode: NodeType;
+  suggestion: NetworkInfoResponse['result'][0];
+  timestamp: Date;
+}
