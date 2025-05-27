@@ -3,7 +3,7 @@ import { RocketLaunchIcon, DocumentArrowDownIcon } from "@heroicons/react/24/sol
 import { NetworkContext } from "../Context";
 import SuggestionComponent from "./SuggestionComponent";
 import { usePDFGenerator } from "../hooks/usePDFGenerator";
-
+import { dummyResponse } from "../types";
 
 
   export default function SidebarSuggestionInfo() {
