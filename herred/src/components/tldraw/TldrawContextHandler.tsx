@@ -25,29 +25,39 @@ export default function TldrawContextHandler() {
           if (selected && editor.getCurrentTool().id !== "delete-tool") {
             if (editor.getCurrentTool().id === "select") {
               if (selected.type === "node") {
-                console.log("Added node", selected.id);
+                if (
+                  !networkInfo.nodes.some(
+                    (node) => node.shapeId === selected.id
+                  )
+                ) {
+                  console.log("Added node", selected.id);
+                  addNode(selected.id);
+                }
 
-                addNode(selected.id);
                 setSidePanelSelection("node", selected.id);
               } else if (selected.type === "arrow") {
-                console.log("Added connection", selected.id);
+                if (
+                  !networkInfo.connections.some(
+                    (connection) => connection.shapeId === selected.id
+                  )
+                ) {
+                  const shape = editor.getShape(selected.id as TLShapeId);
 
-                const shape = editor.getShape(selected.id as TLShapeId);
-
-                const bindings = editor.getBindingsFromShape(
-                  shape as TLShape,
-                  "arrow"
-                );
-
-                if (bindings.length === 2) {
-                  addConnection(
-                    selected.id,
-                    bindings[0].toId,
-                    bindings[1].toId,
-                    // "fiber",
-                    // 1000 // Default capacity, can be adjusted
+                  const bindings = editor.getBindingsFromShape(
+                    shape as TLShape,
+                    "arrow"
                   );
+
+                  if (bindings.length === 2) {
+                    console.log("Added connection", selected.id);
+                    addConnection(
+                      selected.id,
+                      bindings[0].toId,
+                      bindings[1].toId
+                    );
+                  }
                 }
+
                 setSidePanelSelection("connection", selected.id);
               }
             }

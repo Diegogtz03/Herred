@@ -3,7 +3,7 @@ import { Cog6ToothIcon } from "@heroicons/react/24/outline";
 import { InputField } from "../TextInput";
 import React, { useState, useRef, useEffect, useContext } from "react";
 import { NetworkContext } from "../Context";
-import { NetworkInfoRequest } from "../types";
+import { NetworkInfoRequest, NetworkInfoResponse } from "../types";
 
 export default function SidebarNodeInfo() {
   const {
@@ -47,6 +47,22 @@ export default function SidebarNodeInfo() {
       nameInputRef.current.focus();
     }
   }, [isEditingName]);
+
+  const requestHandler = async (request: NetworkInfoRequest) => {
+    const response = await fetch("http://localhost:3000/api/calcRoutes", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(request),
+    });
+
+    const data: NetworkInfoResponse = await response.json();
+
+    console.log("Response", data);
+
+    setAlgorithmResponse(data);
+  };
 
   const handleNameSave = () => {
     if (selectedNode) {
@@ -161,8 +177,10 @@ export default function SidebarNodeInfo() {
         shadow-lg hover:shadow-xl transform hover:scale-105 cursor-pointer"
         onClick={() => {
           const request: NetworkInfoRequest = formatNetworkInfo();
-
           console.log("Request", request);
+
+          requestHandler(request);
+
           // Placeholder for generating suggestions
           setSidePanelSelection("suggestion", selectedNode?.shapeId);
           console.log("Generar sugerencia clicked");

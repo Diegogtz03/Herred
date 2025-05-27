@@ -80,6 +80,7 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
       type: "central",
       status: "",
       description: "",
+      goal: 0,
       umbral: 0,
       consumption: 0,
       neighbours: [],
@@ -105,6 +106,7 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
     capacity: number
   ) => {
     const isMicrowave = connectionType === "microwave";
+
     const newConn: ConnectionType = {
       id: connections.length,
       shapeId: id,
@@ -120,23 +122,55 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
 
     console.log("New connection", newConn, startId, endId);
 
+    const startNode = nodes.find((n) => n.shapeId === startId);
+    const endNode = nodes.find((n) => n.shapeId === endId);
+    const connectionForStartNode = {
+      ...newConn,
+      id: endNode?.id || 0,
+    };
+
+    const connectionForEndNode = {
+      ...newConn,
+      id: startNode?.id || 0,
+    };
+
     setNodes((prev) =>
-      prev.map((node) =>
-        node.shapeId === startId || node.shapeId === endId
-          ? { ...node, neighbours: [...node.neighbours, newConn] }
-          : node
-      )
+      prev.map((node) => {
+        if (node.shapeId === startId) {
+          return {
+            ...node,
+            neighbours: [...node.neighbours, connectionForStartNode],
+          };
+        } else if (node.shapeId === endId) {
+          return {
+            ...node,
+            neighbours: [...node.neighbours, connectionForEndNode],
+          };
+        } else {
+          return node;
+        }
+      })
     );
 
     setConnections((prevConns) => [...prevConns, newConn]);
 
     setNetworkInfo((prev) => ({
       ...prev,
-      nodes: prev.nodes.map((node) =>
-        node.shapeId === startId || node.shapeId === endId
-          ? { ...node, neighbours: [...node.neighbours, newConn] }
-          : node
-      ),
+      nodes: prev.nodes.map((node) => {
+        if (node.shapeId === startId) {
+          return {
+            ...node,
+            neighbours: [...node.neighbours, connectionForStartNode],
+          };
+        } else if (node.shapeId === endId) {
+          return {
+            ...node,
+            neighbours: [...node.neighbours, connectionForEndNode],
+          };
+        } else {
+          return node;
+        }
+      }),
       connections: [...prev.connections, newConn],
     }));
 
@@ -239,8 +273,7 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
         networkInfo.nodes.find((n) => n.shapeId === id);
       setSelectedNode(node || null);
       if (!node) setSelectedConnection(null);
-    } 
-    else if (type === "connection" && id) {
+    } else if (type === "connection" && id) {
       const conn =
         connections.find((n) => n.shapeId === id) ||
         networkInfo.connections.find((n) => n.shapeId === id);
@@ -282,6 +315,7 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
     updatedConnectionPartial: Partial<ConnectionType>
   ) => {
     let fullUpdatedConnection: ConnectionType | undefined;
+
     setConnections((prev) =>
       prev.map((conn) => {
         if (conn.shapeId === id) {
@@ -303,7 +337,13 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
           ? {
               ...n,
               neighbours: n.neighbours.map((c) =>
-                c.shapeId === id ? { ...c, ...updatedConnectionPartial } : c
+                c.shapeId === id
+                  ? {
+                      ...c,
+                      ...updatedConnectionPartial,
+                      id: c.id,
+                    }
+                  : c
               ),
             }
           : n
@@ -312,6 +352,10 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
         c.shapeId === id ? { ...c, ...updatedConnectionPartial } : c
       ),
     }));
+
+    console.log("Updated network info", networkInfo);
+
+    console.log("Updated connection", fullUpdatedConnection);
   };
 
   const updateNetworkInfo = (info: Partial<NetworkInfoType>) => {
@@ -323,7 +367,7 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
       return defaultNetworkContextInfo.formatNetworkInfo();
     }
 
-    const formatedNodes: RequestNode[] = nodes.map((node) => ({
+    const formatedNodes: RequestNode[] = networkInfo.nodes.map((node) => ({
       id: node.id,
       consumption: node.consumption,
       neighbors: node.neighbours.map((neighbour) => ({
@@ -336,12 +380,12 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({
     }));
 
     const request: NetworkInfoRequest = {
-      start: 0, // TODO: Get central node
+      start: networkInfo.nodes.find((n) => n.type === "central")?.id || 0,
       goal: selectedNode.id,
-      goalCapacity: 100, // TODO: Get goal capacity
+      goalCapacity: selectedNode.goal - selectedNode.consumption,
       thresholds: {
-        thresholdWarning: networkInfo.umbral,
-        thresholdDanger: 80,
+        thresholdWarning: 50,
+        thresholdDanger: networkInfo.umbral,
       },
       weights: {
         maxCapacity: 50,
