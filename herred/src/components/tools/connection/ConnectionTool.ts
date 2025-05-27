@@ -1,4 +1,14 @@
-import { createShapeId, StateNode, TLArrowShape, TLShapeId } from "tldraw";
+import { createShapeId, StateNode, TLArrowShape, TLShapeId, TLArrowShapeProps } from "tldraw";
+import { myConnectionStyle } from "../CustomStylePanel";
+import { NetworkContextType } from "@/components/types";
+
+// Define a more specific type for our arrow properties
+interface CustomArrowProps extends Partial<TLArrowShapeProps> {
+    dash: TLArrowShapeProps['dash'];
+    color: TLArrowShapeProps['color'];
+    arrowheadStart: TLArrowShapeProps['arrowheadStart'];
+    arrowheadEnd: TLArrowShapeProps['arrowheadEnd'];
+}
 
 export class ConnectionTool extends StateNode {
     static override id = 'connection-tool'
@@ -6,26 +16,23 @@ export class ConnectionTool extends StateNode {
 
     startShapeId: TLShapeId | null = null
     arrowId: TLShapeId | null = null
+    // activeConnectionType is now derived from shared styles
 
     override onEnter() {
         this.editor.setCursor({ type: 'cross', rotation: 0 })
         this.startShapeId = null
-        // this.arrowId = null
     }
 
     override onExit() {
-        // si no se completo la conexion, quitarlo
         if (this.arrowId && !this.startShapeId) {
             this.editor.deleteShape(this.arrowId);
         }
-        // this.arrowId = null
         this.startShapeId = null
     }
 
     override onPointerMove() {
         if (!this.startShapeId || !this.arrowId) return
 
-        // follow users mouse
         const { currentPagePoint } = this.editor.inputs
         const arrow = this.editor.getShape<TLArrowShape>(this.arrowId)
 
@@ -48,19 +55,27 @@ export class ConnectionTool extends StateNode {
         const { currentPagePoint } = this.editor.inputs
         const hitShape = this.editor.getShapesAtPoint(currentPagePoint)[0]
 
-        // connect only node shapes
         if (hitShape && hitShape.type === 'node') {
             if (!this.startShapeId) {
-                // 1st click, select start node
                 this.startShapeId = hitShape.id
                 this.arrowId = createShapeId()
 
-                // get center point of starting shape
                 const bounds = this.editor.getShapePageBounds(hitShape.id)!
                 const startX = bounds.x + bounds.width / 2
                 const startY = bounds.y + bounds.height / 2
 
-                // create temp arrow
+                // Get active connection type from shared styles
+                const sharedStyles = this.editor.getSharedStyles();
+                const activeConnectionType = sharedStyles.get(myConnectionStyle) || myConnectionStyle.defaultValue;
+                
+                const isFiber = activeConnectionType === 'fiber';
+                const arrowStyleProps: CustomArrowProps = {
+                    dash: isFiber ? 'draw' : 'dashed',
+                    color: isFiber ? 'yellow' : 'black',
+                    arrowheadStart: 'none',
+                    arrowheadEnd: 'none',
+                };
+
                 this.editor.createShape<TLArrowShape>({
                     id: this.arrowId,
                     type: 'arrow',
@@ -69,17 +84,13 @@ export class ConnectionTool extends StateNode {
                     props: {
                         start: { x: 0, y: 0 },
                         end: { x: currentPagePoint.x - startX, y: currentPagePoint.y - startY },
-                        dash: 'dashed',
-                        color: 'light-green',
-                        arrowheadStart: 'none',
-                        arrowheadEnd: 'none', 
+                        ...arrowStyleProps,
                     }
                 })
 
-                // create binding for start
                 this.editor.createBinding({
                     fromId: this.arrowId,
-                    toId: this.startShapeId!, // TODO check later the '!'
+                    toId: this.startShapeId!,
                     type: 'arrow',
                     props: {
                         terminal: 'start',
@@ -87,12 +98,9 @@ export class ConnectionTool extends StateNode {
                     }
                 })
             } else {
-                // second click, complete connection
                 const endShapeId = hitShape.id
-
-                // create binding for end
                 this.editor.createBinding({
-                    fromId: this.arrowId!, // TODO check later the '!'
+                    fromId: this.arrowId!,
                     toId: endShapeId,
                     type: 'arrow',
                     props: {
@@ -101,19 +109,27 @@ export class ConnectionTool extends StateNode {
                     }
                 })
 
+                if (this.arrowId && this.startShapeId) {
+                    // Access addConnection from the extended editor instance
+                    const appState = (this.editor as any).appState as { addConnection?: NetworkContextType['addConnection'] };
+                    if (appState?.addConnection) {
+                        const sharedStyles = this.editor.getSharedStyles();
+                        const activeConnectionType = (sharedStyles.get(myConnectionStyle) || myConnectionStyle.defaultValue) as 'fiber' | 'microwave';
+                        const capacity = 0; // Default capacity for new connections
+                        appState.addConnection(this.arrowId.toString(), this.startShapeId.toString(), endShapeId.toString(), activeConnectionType, capacity);
+                    } else {
+                        console.warn("addConnection function not found on editor.appState");
+                    }
+                }
+
                 this.editor.setCurrentTool('select')
                 this.editor.select(this.arrowId!)
-
-                // reset state and switch back to select tool
                 this.startShapeId = null
-                // this.arrowId = null
             }
         } else if (this.startShapeId && this.arrowId) {
-            // user clicked empty space after selecting first node
-            // in this case, cancel operation
             this.editor.deleteShape(this.arrowId)
             this.startShapeId = null
-            // this.arrowId = null
+            this.arrowId = null 
         }
     }
 

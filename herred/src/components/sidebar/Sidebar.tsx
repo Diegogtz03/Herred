@@ -3,6 +3,7 @@ import SidebarNetworkInfo from './SidebarNetworkInfo';
 import { NetworkContext } from '../Context';
 import SidebarNodeInfo from './SidebarNodeInfo';
 import SidebarConnectionInfo from './SidebarConnectionInfo';
+import SidebarSuggestionInfo from './SidebarSuggestionInfo';
 
 export default function Sidebar() {
 
@@ -15,6 +16,8 @@ export default function Sidebar() {
         (<SidebarNodeInfo/>) :
         sidePanelType == 'connection' ?
         (<SidebarConnectionInfo/>) :
+        sidePanelType == 'suggestion' ?
+        <SidebarSuggestionInfo/> :
         <SidebarNetworkInfo/>
       }
     </div>
